@@ -5,7 +5,6 @@ A simple and precise device orientation emulator for use in Desktop-based web br
 #### Usage
 
 1. Add the injection script to the web page you want to test:
-
 ``` html
 <script src="https://richtr.github.io/deviceorientationemulator/DeviceOrientationEmulator.js"></script>
 ```
