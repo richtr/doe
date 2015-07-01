@@ -1,12 +1,10 @@
-### Device Orientation Emulator
-
+# Device Orientation Emulator
 A simple and precise device orientation emulator for use in Desktop-based web browsers.
 
-#### Usage
-
+## Usage
 Step 1. Add the injection script to the web page you want to test:
 
-``` html
+```html
 <script src="https://richtr.github.io/deviceorientationemulator/DeviceOrientationEmulator.js"></script>
 ```
 
