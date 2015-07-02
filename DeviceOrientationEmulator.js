@@ -7,18 +7,12 @@
   // open a new controller
   var controlsFrame = window.open(controlsUrl, 'deviceoriention_emulator', 'height=300,width=300,scrollbars=yes,menubar=no,toolbar=no,location=no,status=no');
 
-  var existenceToParentConfirmed = false;
   var url = new URL(controlsUrl);
 
   var listener = function(event) {
     if (event.origin !== url.origin) return;
 
     try {
-      if(!existenceToParentConfirmed) {
-        window.clearTimeout(checkConnection);
-        existenceToParentConfirmed = true;
-      }
-
       var json = JSON.parse(event.data);
 
       var event = document.createEvent('Event');
@@ -32,11 +26,6 @@
       console[console.error ? 'error' : 'log'](e);
     }
   };
-
-  var checkConnection = window.setTimeout(function() {
-    alert("Device Orientation events could not be delivered. Ensure popup windows are enabled.");
-    window.removeEventListener("message", listener, false);
-  }, 10000);
 
   window.addEventListener("message", listener, false);
 })();
