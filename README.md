@@ -8,6 +8,8 @@ On any desktop-based web browser open the following page:
 
 Once the page loads, enable 'Always allow popups for richtr.github.io' and reload the page!
 
+NOTE: The relevant code snippet that loads this emulator (if '?emulator' is present in the URL) can be viewed [here](https://github.com/richtr/Marine-Compass/blob/master/index.html#L91-L99).
+
 ## Usage
 Step 1. Add the injection script to the web page you want to test:
 
