@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 
   <script src="js/third_party/three.min.js"></script>
-  <script src="js/third_party/TrackballControls.js"></script>
+  <script src="js/DeviceOrientationEmulatorControls.js"></script>
   <script src="js/third_party/fulltilt.min.js"></script>
 
   <script src="js/utils.js"></script>
@@ -23,6 +23,10 @@
       Beta: <input type="text" id="orientationBeta" class="data_output" value="-" disabled>
       Gamma: <input type="text" id="orientationGamma" class="data_output" value="-" disabled>
   	</div>
+  </div>
+
+  <div id="footer">
+    <input type="checkbox" id="preventRoll"> Remove Device Roll
   </div>
 
   <script>

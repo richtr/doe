@@ -20,6 +20,8 @@ var APP = {
 		this.width = 500;
 		this.height = 500;
 
+		this.removeDeviceRoll = false;
+
 		this.load = function ( json ) {
 
 			renderer = new THREE.WebGLRenderer( { antialias: true } );
@@ -110,6 +112,11 @@ var APP = {
 		var fulltiltEuler = new FULLTILT.Euler();
 
 		var worldQuat = new THREE.Quaternion( - Math.sqrt( 0.5 ), 0, 0, Math.sqrt( 0.5 ) );
+		var camQuat = new THREE.Quaternion();
+		var rotQuat = new THREE.Quaternion();
+
+		var rotation = new THREE.Euler( 0, 0, 0, 'YXZ' );
+		var rotZ = 0;
 
 		var animate = function ( time ) {
 
@@ -119,11 +126,26 @@ var APP = {
 
 			controls.update();
 
-			// Calculate current camera orientation using Full-Tilt library
-			var cam = camera.quaternion.clone();
-			cam.multiply(worldQuat).inverse();
+			scope.render();
 
-			fulltiltEuler.setFromQuaternion(cam);
+			// *** Calculate current "device orientation" using Full-Tilt library
+
+			camQuat.copy( controls.object.quaternion );
+
+			// Position device to reflect real world space
+			camQuat.inverse();
+			camQuat.multiply( worldQuat );
+			camQuat.inverse();
+
+			// Remove device roll on request
+			if(scope.removeDeviceRoll) {
+			        rotZ = rotation.setFromQuaternion( controls.object.quaternion, 'YXZ' ).z;
+			        rotQuat.set( 0, 0, Math.sin( ( - rotZ  ) / 2 ), Math.cos( ( - rotZ ) / 2 ) );
+			        camQuat.multiply( rotQuat );
+			}
+
+			// Derive Tait-Bryan angles from calculated orientation quaternion
+			fulltiltEuler.setFromQuaternion(camQuat);
 
       // Store device orientation data for dispatch to opener window
       window.deviceOrientation = fulltiltEuler;
@@ -141,11 +163,12 @@ var APP = {
 
 		this.play = function (url) {
 
-			// Set up mouse/touch controls
-      controls = new THREE.TrackballControls( camera );
-			controls.target.set(0,0,0);
-			controls.noPan = true;
-			controls.noZoom = true;
+			var phoneMesh = scene.getObjectByProperty( 'uuid', '33A20938-78BD-4994-8180-E10EC6876880', true );
+
+			// Set up device orientation emulator controls
+			controls = new DeviceOrientationEmulatorControls( phoneMesh, scope.dom );
+			controls.enableManualZoom = false;
+			controls.connect();
 
 			request = requestAnimationFrame( animate );
 			prevTime = performance.now();
