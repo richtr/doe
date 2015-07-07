@@ -40,7 +40,7 @@
           closeOnConfirm: true
         },
         function(){
-          var url = new URL('https://richtr.github.io/deviceorientationemulator/DeviceOrientationEmulator.js');
+          var url = new URL('https://richtr.github.io/deviceorientationemulator/emulator/index.html');
 
           // Open a new popup containing the Device Orientation Emulator!
           var controlsFrame = window.open(url, 'deviceoriention_emulator', 'height=300,width=300,scrollbars=yes,menubar=no,toolbar=no,location=no,status=no');
