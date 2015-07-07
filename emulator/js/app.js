@@ -126,23 +126,22 @@ var APP = {
 
 			controls.update();
 
+			// Remove device roll on request
+			if(scope.removeDeviceRoll) {
+				rotZ = rotation.setFromQuaternion( controls.object.quaternion, 'YXZ' ).z;
+				rotQuat.set( 0, 0, Math.sin( ( - rotZ  ) / 2 ), Math.cos( ( - rotZ ) / 2 ) );
+				controls.object.quaternion.multiply( rotQuat );
+			}
+
 			renderer.render( scene, camera );
 
 			// *** Calculate current "device orientation" using Full-Tilt library
 
-			camQuat.copy( controls.object.quaternion );
-
 			// Position device to reflect real world space
+			camQuat.copy( controls.object.quaternion );
 			camQuat.inverse();
 			camQuat.multiply( worldQuat );
 			camQuat.inverse();
-
-			// Remove device roll on request
-			if(scope.removeDeviceRoll) {
-			        rotZ = rotation.setFromQuaternion( controls.object.quaternion, 'YXZ' ).z;
-			        rotQuat.set( 0, 0, Math.sin( ( - rotZ  ) / 2 ), Math.cos( ( - rotZ ) / 2 ) );
-			        camQuat.multiply( rotQuat );
-			}
 
 			// Derive Tait-Bryan angles from calculated orientation quaternion
 			fulltiltEuler.setFromQuaternion(camQuat);
