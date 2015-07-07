@@ -14,7 +14,7 @@
 
 (function() {
 
-  window.addEventListener('load', function() {
+  function runDetection() {
 
     var checkTimeout = 500;
 
@@ -88,6 +88,12 @@
       window.removeEventListener('deviceorientation', check, false);
     }, false);
 
-  }, false);
+  }
+
+  if (document.readyState === 'complete') {
+    runDetection();
+  } else {
+    window.addEventListener('load', runDetection, false);
+  }
 
 })();
