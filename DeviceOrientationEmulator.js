@@ -16,6 +16,8 @@
 
   window.addEventListener('load', function() {
 
+    var checkTimeout = 500;
+
     var deviceOrientationCheck = window.setTimeout(function() {
 
       var swalCSSEl = document.createElement('link');
@@ -69,7 +71,7 @@
 
       document.getElementsByTagName('head')[0].appendChild(swalJSEl);
 
-    }, 200);
+    }, checkTimeout);
 
     var isFirstEvent = true;
 
