@@ -4,19 +4,19 @@ A simple and precise device orientation emulator for use in Desktop-based web br
 ## Demo
 On any desktop-based web browser open the following page:
 
-[https://richtr.github.io/Marine-Compass/?emulator](https://richtr.github.io/Marine-Compass/?emulator)
+[https://richtr.github.io/Marine-Compass/](https://richtr.github.io/Marine-Compass/)
 
-Once the page loads, enable 'Always allow popups for richtr.github.io' and, then reload the page.
+If your browser does not support Device Orientation Events then you will be asked if you want to use the emulator.
 
-NOTE: The relevant code snippet that loads this emulator (if '?emulator' is present in the URL) can be viewed [here](https://github.com/richtr/Marine-Compass/blob/master/index.html#L91-L98).
+That's it!
 
 ## Usage
-Step 1. Add the injection script to the web page you want to test:
+Step 1. Add the Device Orientation Emulator script to any web page you want to allow the emulator to run on when device orientation event support can not be detected:
 
 ```html
 <script src="https://richtr.github.io/deviceorientationemulator/DeviceOrientationEmulator.js"></script>
 ```
 
-Step 2. Load this web page in a Desktop browser and enable 'Always allow popups'. Reload the page if necessary once you have enabled popups.
+Step 2. There is no step 2.
 
-Step 3. When the page reloads the popup should load successfully, you can then drag the virtual device presented within the popup around and  'deviceorientation' events will be propagated towards your web page.
+Happy debugging of device orientation events :)
