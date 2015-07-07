@@ -126,7 +126,7 @@ var APP = {
 
 			controls.update();
 
-			scope.render();
+			renderer.render( scene, camera );
 
 			// *** Calculate current "device orientation" using Full-Tilt library
 
