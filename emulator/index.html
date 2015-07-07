@@ -30,7 +30,7 @@
   </div>
 
   <script>
-  // Pass device orientation event info to opener window
+  // Push device orientation event info to opener window
   (function() {
     if (!window.opener) return;
 
@@ -44,8 +44,6 @@
             obj["beta"] = orientation.beta;
             obj["gamma"] = orientation.gamma;
             obj["absolute"] = orientation.absolute;
-            /*obj["webkitCompassHeading"] = dO.webkitCompassHeading;
-            obj["webkitCompassAccuracy"] = dO.webkitCompassAccuracy;*/
             var objStr = JSON.stringify(obj);
             window.opener.postMessage(objStr, "*");
           }
