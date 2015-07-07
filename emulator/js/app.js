@@ -20,7 +20,7 @@ var APP = {
 		this.width = 500;
 		this.height = 500;
 
-		this.removeDeviceRoll = false;
+		this.removeDeviceRoll = true;
 
 		this.load = function ( json ) {
 
