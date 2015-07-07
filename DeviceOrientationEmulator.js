@@ -16,7 +16,7 @@
 
   function runDetection() {
 
-    var checkTimeout = 500;
+    var checkTimeout = 1000;
 
     var deviceOrientationCheck = window.setTimeout(function() {
 
