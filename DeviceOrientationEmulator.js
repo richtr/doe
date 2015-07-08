@@ -14,6 +14,8 @@
 
 (function() {
 
+  var rootUrl = 'https://richtr.github.io/deviceorientationemulator';
+
   function runDetection() {
 
     var checkTimeout = 1000;
@@ -33,39 +35,18 @@
       swalJSEl.onload = function() {
         swal({
           title: "No compass detected.",
-          text: "This page is built for devices that emit device orientation events. If you would still like to test this page you will need to use an emulator.",
-          showCancelButton: true,
+          text: "This page is built for devices that emit device orientation events. If you would still like to try this page you can use an emulator.",
           type: "error",
+          showCancelButton: true,
           confirmButtonColor: "#DD6B55",
-          confirmButtonText: "Use the emulator!",
+          confirmButtonText: "Open in the emulator",
           cancelButtonText: "Cancel",
           closeOnConfirm: true
         },
         function(){
-          var url = new URL('https://richtr.github.io/deviceorientationemulator/emulator/index.html');
-
-          // Open a new popup containing the Device Orientation Emulator!
-          var controlsFrame = window.open(url, 'deviceoriention_emulator', 'height=300,width=300,scrollbars=yes,menubar=no,toolbar=no,location=no,status=no');
-
-          var listener = function(event) {
-            if (event.origin !== url.origin) return;
-
-            try {
-              var json = JSON.parse(event.data);
-
-              var event = document.createEvent('Event');
-              event.initEvent('deviceorientation', true, true);
-
-              for(var key in json) event[key] = json[key];
-              event['simulation'] = true; // add 'simulated event' flag
-
-              window.dispatchEvent(event);
-            } catch(e) {
-              console[console.error ? 'error' : 'log'](e);
-            }
-          };
-
-          window.addEventListener('message', listener, false);
+          // Open the mobile emulator with the current URL
+          var selfUrl = encodeURIComponent(window.location);
+          window.location = rootUrl + '/emulator/?url=' + selfUrl;
         });
       };
 
@@ -89,6 +70,32 @@
     }, false);
 
   }
+
+  function runEmulation() {
+    var url = new URL(rootUrl);
+
+    var listener = function(event) {
+      if (event.origin !== url.origin) return;
+
+      try {
+        var json = JSON.parse(event.data);
+
+        var event = document.createEvent('Event');
+        event.initEvent('deviceorientation', true, true);
+
+        for(var key in json) event[key] = json[key];
+        event['simulation'] = true; // add 'simulated event' flag
+
+        window.dispatchEvent(event);
+      } catch(e) {
+        console[console.error ? 'error' : 'log'](e);
+      }
+    };
+
+    window.addEventListener('message', listener, false);
+  }
+
+  runEmulation();
 
   if (document.readyState === 'complete') {
     runDetection();
