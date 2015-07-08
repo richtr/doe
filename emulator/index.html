@@ -1,0 +1,38 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+  <title>Device Orientation Emulator</title>
+  
+  <script type="text/javascript" src="js/libs/jquery-1.10.2.min.js"></script>
+
+  <link type="text/css" rel="stylesheet" href="css/groundwork.css">
+  <link type="text/css" rel="stylesheet" href="css/resizer.css">
+
+  <script type="text/javascript" src="js/resizer.js"></script>
+</head>
+
+<body class="resizer-page">
+
+  <iframe id="controller" class="bounceInDown animated charcoal" src="../popup/index.html" frameborder="0"></iframe>
+
+  <div id="resizer" class="bounceInDown animated" style="z-index:2;">
+    <ul class="button-group">
+      <!--<li><button class="charcoal desktop-only" title="Fullscreen" data-device="fullscreen" data-viewport-width="100%" data-viewport-height="100%" data-user-agent=""><i class="icon-fullscreen"></i></button></li>
+      <li><button class="charcoal desktop-only" title="Desktop" data-device="desktop" data-viewport-width="1920px" data-viewport-height="1080px" data-user-agent=""><i class="icon-desktop"></i></button></li>
+      <li><button class="charcoal desktop-only" title="13 &#39; MacBook Pro" data-device="macbook" data-viewport-width="1280px" data-viewport-height="800px" data-user-agent=""><i class="icon-laptop"></i></button></li>-->
+      <li><button class="charcoal hide-on-small-tablet hide-on-mobile" data-device="ipad" title="iPad" data-rotate="true" data-viewport-width="768px" data-viewport-height="1024px" data-user-agent="Mozilla/5.0 (iPad; CPU OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A5376e Safari/8536.25"><i class="icon-tablet"></i></button></li>
+      <li><button class="charcoal hide-on-mobile" title="Android Tablet" data-device="tablet" data-rotate="true" data-viewport-width="720px" data-viewport-height="1280px" data-user-agent="Mozilla/5.0 (Linux; U; Android 4.0.2; en-us; Galaxy Nexus Build/ICL53F) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30"><i class="android icon-tablet"></i></button></li>
+      <li><button class="charcoal" title="Android Phone" data-rotate="true" data-device="android" data-viewport-width="480px" data-viewport-height="720px" data-user-agent="Mozilla/5.0 (Linux; U; Android 2.3.6; en-us; Nexus S Build/GRK39F) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile Safari/533.1"><i class="android icon-mobile-phone"></i></button></li>
+      <li><button class="asphalt active" title="iPhone" data-rotate="true" data-device="iphone" data-viewport-width="320px" data-viewport-height="640px" data-user-agent="Mozilla/5.0 (iPhone; CPU iPhone OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A5376e Safari/8536.25"><i class="icon-mobile-phone"></i></button></li>
+      <!--<li><button class="charcoal rotate" data-rotate="true" title="Toggle Landscape/Portrait"><i class="icon-rotate-left"></i></button></li>-->
+    </ul>
+  </div>
+
+  <div id="resizerFrameWrapper">
+    <iframe id="resizerFrame" class="relative" style="z-index:1;" src="" frameborder="0"></iframe>
+  </div>
+
+</body>
+</html>

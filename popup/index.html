@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Device Orientation Controller</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+  <script src="js/third_party/three.min.js"></script>
+  <script src="js/DeviceOrientationEmulatorControls.js"></script>
+  <script src="js/third_party/fulltilt.min.js"></script>
+
+  <script src="js/utils.js"></script>
+
+  <script src="js/app.js"></script>
+  <script src="js/controls.js"></script>
+
+  <link href="css/controls.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+  <div id="info">
+  	<div class="small">
+      Alpha: <input type="text" id="orientationAlpha" class="data_output" value="-" disabled>
+      Beta: <input type="text" id="orientationBeta" class="data_output" value="-" disabled>
+      Gamma: <input type="text" id="orientationGamma" class="data_output" value="-" disabled>
+  	</div>
+  </div>
+
+  <script>
+  // Push device orientation event info to opener window
+  (function() {
+    if (!window.parent) return;
+
+    (function emitDeviceOrientation() {
+      window.setTimeout(function() {
+        try {
+          var orientation = window.deviceOrientation;
+
+          if (orientation) {
+
+            var data = {};
+
+            data["alpha"] = orientation.alpha;
+            data["beta"] = orientation.beta;
+            data["gamma"] = orientation.gamma;
+            data["absolute"] = orientation.absolute;
+
+            data["roll"] = orientation.roll;
+
+            window.parent.postMessage(JSON.stringify(data), "*");
+
+          }
+
+        } catch (e) { console.error(e); }
+
+        emitDeviceOrientation();
+      }, 50);
+    })();
+  })();
+  </script>
+</body>
+</html>
