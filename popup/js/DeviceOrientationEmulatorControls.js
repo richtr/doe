@@ -100,6 +100,7 @@ var DeviceOrientationEmulatorControls = function( object, domElement ) {
 
 		this.element.addEventListener( 'mousemove', this.onDocumentMouseMove, false );
 		this.element.addEventListener( 'mouseup', this.onDocumentMouseUp, false );
+		this.element.addEventListener( 'mouseout', this.onDocumentMouseUp, false );
 
 		fireEvent( CONTROLLER_EVENT.MANUAL_CONTROL + 'start' );
 		fireEvent( CONTROLLER_EVENT.ROTATE_CONTROL + 'start' );
@@ -113,6 +114,7 @@ var DeviceOrientationEmulatorControls = function( object, domElement ) {
 	this.onDocumentMouseUp = function( event ) {
 		this.element.removeEventListener( 'mousemove', this.onDocumentMouseMove, false );
 		this.element.removeEventListener( 'mouseup', this.onDocumentMouseUp, false );
+		this.element.removeEventListener( 'mouseout', this.onDocumentMouseUp, false );
 
 		appState = CONTROLLER_STATE.AUTO;
 
