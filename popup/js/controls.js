@@ -12,7 +12,7 @@ window.addEventListener( 'load', function() {
 
 		document.body.appendChild( player.dom );
 
-		player.play();
+
 
 		window.addEventListener( 'resize', function() {
 			player.setSize( window.innerWidth, window.innerHeight );
@@ -56,16 +56,24 @@ window.addEventListener( 'load', function() {
 
 			var json = JSON.parse( event.data );
 
-			var _x = THREE.Math.degToRad( json[ 'beta' ] || 0 );
-			var _y = THREE.Math.degToRad( json[ 'alpha' ] || 0 );
-			var _z = THREE.Math.degToRad( json[ 'gamma' ] || 0 );
+			switch ( json.action ) {
+				case 'start':
+					player.play(); // Go!!!
 
-			euler.set( _x, _y, -_z, 'YXZ' );
+					break;
+				case 'setCoords':
+					var _x = THREE.Math.degToRad( json.data[ 'beta' ] || 0 );
+					var _y = THREE.Math.degToRad( json.data[ 'alpha' ] || 0 );
+					var _z = THREE.Math.degToRad( json.data[ 'gamma' ] || 0 );
 
-			// Apply provided deviceorientation values to controller
-			controls.object.quaternion.setFromEuler( euler );
-			controls.object.quaternion.multiply( worldQuat );
+					euler.set( _x, _y, -_z, 'YXZ' );
 
+					// Apply provided deviceorientation values to controller
+					controls.object.quaternion.setFromEuler( euler );
+					controls.object.quaternion.multiply( worldQuat );
+
+					break;
+			}
 		}, false );
 
 		controls.addEventListener( 'userinteractionend', function() {
@@ -76,6 +84,13 @@ window.addEventListener( 'load', function() {
 				} ), '*' );
 			}
 		}, false );
+
+		// Kick off the controller by telling its parent window that it is now ready
+		if ( window.parent ) {
+			window.parent.postMessage( JSON.stringify( {
+				'action': 'connect'
+			} ), '*' );
+		}
 
 	} );
 }, false );

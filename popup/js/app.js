@@ -63,6 +63,14 @@ var APP = {
 
 			}
 
+			// Rotate the phone in the scene, not the camera as usual
+			var phoneMesh = scene.getObjectByProperty( 'uuid', '33A20938-78BD-4994-8180-E10EC6876880', true );
+
+			// Set up device orientation emulator controls
+			controls = new DeviceOrientationEmulatorControls( phoneMesh, scope.dom );
+			controls.enableManualZoom = false;
+			controls.connect();
+
 		};
 
 		this.setCamera = function( value ) {
@@ -154,14 +162,6 @@ var APP = {
 		};
 
 		this.play = function( url ) {
-
-			// Rotate the phone in the scene, not the camera as usual
-			var phoneMesh = scene.getObjectByProperty( 'uuid', '33A20938-78BD-4994-8180-E10EC6876880', true );
-
-			// Set up device orientation emulator controls
-			controls = new DeviceOrientationEmulatorControls( phoneMesh, scope.dom );
-			controls.enableManualZoom = false;
-			controls.connect();
 
 			request = requestAnimationFrame( animate );
 			prevTime = performance.now();

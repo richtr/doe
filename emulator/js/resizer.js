@@ -23,38 +23,6 @@ window.addEventListener( 'load', function() {
 		resizerFrame.src = urlParam;
 	}
 
-	// If any deviceorientation URL params are provided, send them to the controller
-	if ( selfUrl.hash.length > 6 ) {
-		var coords = selfUrl.hash.substring( 1 );
-		try {
-
-			var coordsObj = JSON.parse( coords );
-
-			if ( coordsObj.length === 3 && ( coordsObj[ 0 ] || coordsObj[ 1 ] || coordsObj[ 2 ] ) ) {
-				var controller = document.querySelector( '#controller' );
-				if ( controller ) {
-					var data = {
-						'alpha': coordsObj[ 0 ] || 0,
-						'beta': coordsObj[ 1 ] || 0,
-						'gamma': coordsObj[ 2 ] || 0
-					};
-
-					if ( controller.contentWindow.document.readyState == 'complete' ) {
-						window.setTimeout( function() {
-							controller.contentWindow.postMessage( JSON.stringify( data ), selfUrl.origin );
-						}, 1000 );
-					} else {
-						controller.contentWindow.addEventListener( 'load', function() {
-							controller.contentWindow.postMessage( JSON.stringify( data ), selfUrl.origin );
-						}, false );
-					}
-
-				}
-			}
-
-		} catch ( e ) {}
-	}
-
 	$( 'body' ).on( 'click', 'button[data-viewport-width]', function( e ) {
 		if ( $( this ).attr( 'data-viewport-width' ) == '100%' ) {
 			newWidth = '100%';
@@ -127,6 +95,37 @@ window.addEventListener( 'load', function() {
 		var json = JSON.parse( event.data );
 
 		switch ( json.action ) {
+			case 'connect':
+				var controller = document.querySelector( '#controller' );
+
+				// If any deviceorientation URL params are provided, send them to the controller
+				if ( selfUrl.hash.length > 6 ) {
+					var coords = selfUrl.hash.substring( 1 );
+					try {
+						var coordsObj = JSON.parse( coords );
+
+						if ( coordsObj.length === 3 && ( coordsObj[ 0 ] || coordsObj[ 1 ] || coordsObj[ 2 ] ) ) {
+
+							controller.contentWindow.postMessage( JSON.stringify( {
+								'action': 'setCoords',
+								'data': {
+									'alpha': coordsObj[ 0 ] || 0,
+									'beta': coordsObj[ 1 ] || 0,
+									'gamma': coordsObj[ 2 ] || 0
+								}
+							} ), selfUrl.origin );
+
+						}
+					} catch ( e ) {}
+				}
+
+				// Tell controller to start rendering
+				controller.contentWindow.postMessage( JSON.stringify( {
+					'action': 'start'
+				} ), selfUrl.origin );
+
+				break;
+
 			case 'newData':
 				var roll = json.data[ 'roll' ] || 0;
 				delete json.data[ 'roll' ]; // remove roll attribute from json
