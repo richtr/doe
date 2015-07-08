@@ -5,7 +5,9 @@ A simple and precise device orientation emulator for web browsers that do not su
 On any web browser that does not support device orientation (e.g. Desktop browsers) open one of the following pages:
 
 [https://richtr.github.io/threeVR/examples/vr_basic.html](https://richtr.github.io/threeVR/examples/vr_basic.html)
+
 [https://richtr.github.io/Marine-Compass/](https://richtr.github.io/Marine-Compass/)
+
 [https://richtr.github.io/Full-Tilt/examples/vr_interactive.html](https://richtr.github.io/Full-Tilt/examples/vr_interactive.html)
 
 If your browser does not support Device Orientation Events then you will be asked if you want to load these pages in this emulator.
