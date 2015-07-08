@@ -44,8 +44,10 @@ a, a:visited {
 		position: fixed;
 		top: 0;
 		left: 0;
-		width: 300px;
-		height: 300px;
+		width: 100%;
+		max-width: 300px;
+		height: 100%;
+		max-height: 300px;
 		text-align: center;
 		background: #383636;
 		z-index: 3;
