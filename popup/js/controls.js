@@ -1,5 +1,7 @@
 window.addEventListener( 'load', function() {
 
+	var url = new URL( document.location );
+
 	var loader = new THREE.XHRLoader();
 
 	loader.load( 'data/app.json', function( text ) {
@@ -25,19 +27,54 @@ window.addEventListener( 'load', function() {
 		window.addEventListener( 'deviceorientation', function( event ) {
 			if ( !window.parent ) return;
 
-			var data = {};
-			data[ "alpha" ] = event.alpha;
-			data[ "beta" ] = event.beta;
-			data[ "gamma" ] = event.gamma;
-			data[ "absolute" ] = event.absolute;
-			data[ "roll" ] = event.roll;
-
-			window.parent.postMessage( JSON.stringify( data ), "*" );
+			window.parent.postMessage( JSON.stringify( {
+				'action': 'newData',
+				'data': {
+					'alpha': event.alpha,
+					'beta': event.beta,
+					'gamma': event.gamma,
+					'absolute': event.absolute,
+					'roll': event.roll
+				}
+			} ), '*' );
 
 			// Print deviceorientation data values in GUI
-			orientationAlpha.value = printDataValue( data[ "alpha" ] );
-			orientationBeta.value = printDataValue( data[ "beta" ] );
-			orientationGamma.value = printDataValue( data[ "gamma" ] );
+			orientationAlpha.value = printDataValue( event.alpha );
+			orientationBeta.value = printDataValue( event.beta );
+			orientationGamma.value = printDataValue( event.gamma );
+		}, false );
+
+		var controls = player.getControls();
+
+		var euler = new THREE.Euler();
+		var worldQuat = new THREE.Quaternion( -Math.sqrt( 0.5 ), 0, 0, Math.sqrt( 0.5 ) );
+
+		// Receive messages from window.parent
+		window.addEventListener( 'message', function( event ) {
+
+			if ( event.origin != url.origin ) return;
+
+			var json = JSON.parse( event.data );
+
+			var _x = THREE.Math.degToRad( json[ 'beta' ] || 0 );
+			var _y = THREE.Math.degToRad( json[ 'alpha' ] || 0 );
+			var _z = THREE.Math.degToRad( json[ 'gamma' ] || 0 );
+
+			euler.set( _x, _y, -_z, 'YXZ' );
+
+			// Apply provided deviceorientation values to controller
+			controls.object.quaternion.setFromEuler( euler );
+			controls.object.quaternion.multiply( worldQuat );
+
+		}, false );
+
+		controls.addEventListener( 'userinteractionend', function() {
+			// Tell parent to update URL hash
+			if ( window.parent ) {
+				window.parent.postMessage( JSON.stringify( {
+					'action': 'updatePosition'
+				} ), '*' );
+			}
 		}, false );
 
 	} );

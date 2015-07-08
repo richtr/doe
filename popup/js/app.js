@@ -75,23 +75,29 @@ var APP = {
 
 		this.setScene = function( value ) {
 
-				scene = value;
+			scene = value;
 
-			},
+		};
 
-			this.setSize = function( width, height ) {
+		this.setSize = function( width, height ) {
 
-				if ( renderer._fullScreen ) return;
+			if ( renderer._fullScreen ) return;
 
-				this.width = width;
-				this.height = height;
+			this.width = width;
+			this.height = height;
 
-				camera.aspect = this.width / this.height;
-				camera.updateProjectionMatrix();
+			camera.aspect = this.width / this.height;
+			camera.updateProjectionMatrix();
 
-				renderer.setSize( width, height );
+			renderer.setSize( width, height );
 
-			};
+		};
+
+		this.getControls = function() {
+
+			return controls;
+
+		};
 
 		var dispatch = function( array, event ) {
 

@@ -7,8 +7,10 @@ function getParameterByName( name ) {
 
 window.addEventListener( 'load', function() {
 
+	var selfUrl = new URL( window.location );
+	var targetUrl;
+
 	var urlParam = getParameterByName( 'url' );
-	var url;
 
 	var resizerFrame = document.querySelector( 'iframe#resizerFrame' );
 
@@ -16,9 +18,41 @@ window.addEventListener( 'load', function() {
 		if ( urlParam.substr( 0, 4 ) != 'http' ) {
 			urlParam = 'http://' + urlParam;
 		}
-		url = new URL( urlParam );
+		targetUrl = new URL( urlParam );
 		// Load url in iframe
 		resizerFrame.src = urlParam;
+	}
+
+	// If any deviceorientation URL params are provided, send them to the controller
+	if ( selfUrl.hash.length > 6 ) {
+		var coords = selfUrl.hash.substring( 1 );
+		try {
+
+			var coordsObj = JSON.parse( coords );
+
+			if ( coordsObj.length === 3 && ( coordsObj[ 0 ] || coordsObj[ 1 ] || coordsObj[ 2 ] ) ) {
+				var controller = document.querySelector( '#controller' );
+				if ( controller ) {
+					var data = {
+						'alpha': coordsObj[ 0 ] || 0,
+						'beta': coordsObj[ 1 ] || 0,
+						'gamma': coordsObj[ 2 ] || 0
+					};
+
+					if ( controller.contentWindow.document.readyState == 'complete' ) {
+						window.setTimeout( function() {
+							controller.contentWindow.postMessage( JSON.stringify( data ), selfUrl.origin );
+						}, 1000 );
+					} else {
+						controller.contentWindow.addEventListener( 'load', function() {
+							controller.contentWindow.postMessage( JSON.stringify( data ), selfUrl.origin );
+						}, false );
+					}
+
+				}
+			}
+
+		} catch ( e ) {}
 	}
 
 	$( 'body' ).on( 'click', 'button[data-viewport-width]', function( e ) {
@@ -86,14 +120,37 @@ window.addEventListener( 'load', function() {
 		}
 	} );
 
+	var d = {};
+
 	// Relay deviceorientation events on to content iframe
 	window.addEventListener( 'message', function( event ) {
 		var json = JSON.parse( event.data );
-		var roll = json[ 'roll' ] || 0;
-		delete json[ 'roll' ]; // remove roll attribute
 
-		resizerFrame.contentWindow.postMessage( JSON.stringify( json ), url.origin );
-		resizerFrame.style.transform = 'rotate(' + roll + 'deg)';
+		switch ( json.action ) {
+			case 'newData':
+				var roll = json.data[ 'roll' ] || 0;
+				delete json.data[ 'roll' ]; // remove roll attribute from json
+
+				// Post deviceorientation data to resizerFrame window
+				resizerFrame.contentWindow.postMessage( JSON.stringify( json.data ), targetUrl.origin );
+
+				// Apply roll compensation to resizerFrame
+				resizerFrame.style.transform = 'rotateZ(' + roll + 'deg)';
+
+				// Store latest data so it can be used if/when 'updatePosition' case runs
+				d = json.data;
+
+				break;
+
+			case 'updatePosition':
+				// replace current page's URL hash (if History API is supported)
+				if ( 'replaceState' in history ) {
+					history.replaceState( '', '', '#[' + d[ 'alpha' ] + ',' + d[ 'beta' ] + ',' + d[ 'gamma' ] + ']' );
+				}
+
+				break;
+		}
 	}, false );
+
 
 }, false );
