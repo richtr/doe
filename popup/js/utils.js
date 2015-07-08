@@ -21,6 +21,8 @@ function dispatchDeviceOrientationEvent( values ) {
 	var event = document.createEvent( 'Event' );
 	event.initEvent( 'deviceorientation', true, true );
 
+	if (data.alpha >= 360) data.alpha %= 360;
+
 	var eventData = {
 		'alpha': data.alpha || 0,
 		'beta': data.beta || 90,
