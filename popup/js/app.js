@@ -1,10 +1,6 @@
-/**
- * @author mrdoob / http://mrdoob.com/
- */
-
 var APP = {
 
-	Player: function () {
+	Player: function() {
 
 		var scope = this;
 
@@ -20,9 +16,11 @@ var APP = {
 		this.width = 500;
 		this.height = 500;
 
-		this.load = function ( json ) {
+		this.load = function( json ) {
 
-			renderer = new THREE.WebGLRenderer( { antialias: true } );
+			renderer = new THREE.WebGLRenderer( {
+				antialias: true
+			} );
 			renderer.setClearColor( 0xFFFFFF, 1 );
 			renderer.setPixelRatio( window.devicePixelRatio );
 			this.dom = renderer.domElement;
@@ -40,7 +38,7 @@ var APP = {
 
 				var scripts = json.scripts[ uuid ];
 
-				for ( var i = 0; i < scripts.length; i ++ ) {
+				for ( var i = 0; i < scripts.length; i++ ) {
 
 					var script = scripts[ i ];
 
@@ -67,7 +65,7 @@ var APP = {
 
 		};
 
-		this.setCamera = function ( value ) {
+		this.setCamera = function( value ) {
 
 			camera = value;
 			camera.aspect = this.width / this.height;
@@ -75,29 +73,29 @@ var APP = {
 
 		};
 
-		this.setScene = function ( value ) {
+		this.setScene = function( value ) {
 
-			scene = value;
+				scene = value;
 
-		},
+			},
 
-		this.setSize = function ( width, height ) {
+			this.setSize = function( width, height ) {
 
-			if ( renderer._fullScreen ) return;
+				if ( renderer._fullScreen ) return;
 
-			this.width = width;
-			this.height = height;
+				this.width = width;
+				this.height = height;
 
-			camera.aspect = this.width / this.height;
-			camera.updateProjectionMatrix();
+				camera.aspect = this.width / this.height;
+				camera.updateProjectionMatrix();
 
-			renderer.setSize( width, height );
+				renderer.setSize( width, height );
 
-		};
+			};
 
-		var dispatch = function ( array, event ) {
+		var dispatch = function( array, event ) {
 
-			for ( var i = 0, l = array.length; i < l; i ++ ) {
+			for ( var i = 0, l = array.length; i < l; i++ ) {
 
 				array[ i ]( event );
 
@@ -109,68 +107,52 @@ var APP = {
 
 		var fulltiltEuler = new FULLTILT.Euler();
 
-		var worldQuat = new THREE.Quaternion( - Math.sqrt( 0.5 ), 0, 0, Math.sqrt( 0.5 ) );
+		var worldQuat = new THREE.Quaternion( -Math.sqrt( 0.5 ), 0, 0, Math.sqrt( 0.5 ) );
 		var camQuat = new THREE.Quaternion();
 		var rotQuat = new THREE.Quaternion();
 
 		var rotation = new THREE.Euler( 0, 0, 0, 'YXZ' );
-		var rotZ = 0;
 
-		var animate = function ( time ) {
+		var animate = function( time ) {
 
 			request = requestAnimationFrame( animate );
 
-			dispatch( events.update, { time: time, delta: time - prevTime } );
+			dispatch( events.update, {
+				time: time,
+				delta: time - prevTime
+			} );
 
 			controls.update();
 
-			renderer.render( scene, camera );
-
-			// *** Calculate current "device orientation" using Full-Tilt library
-
+			// *** Calculate device orientation quaternion (without affecting rendering)
 			camQuat.copy( controls.object.quaternion );
-
-			// Position device to reflect real world space
 			camQuat.inverse();
 			camQuat.multiply( worldQuat );
 			camQuat.inverse();
 
-			// Remove device roll on request
-			/*if(scope.removeDeviceRoll) {
-			        rotZ = rotation.setFromQuaternion( controls.object.quaternion, 'YXZ' ).z;
-			        rotQuat.set( 0, 0, Math.sin( ( - rotZ  ) / 2 ), Math.cos( ( - rotZ ) / 2 ) );
-			        camQuat.multiply( rotQuat );
-			}*/
+			// Derive Tait-Bryan angles from calculated device orientation quaternion
+			fulltiltEuler.setFromQuaternion( camQuat );
 
-			// Derive Tait-Bryan angles from calculated orientation quaternion
-			fulltiltEuler.setFromQuaternion(camQuat);
+			// Calculate required emulator screen roll compensation required
+			var rollZ = rotation.setFromQuaternion( controls.object.quaternion, 'YXZ' ).z;
+			fulltiltEuler.roll = THREE.Math.radToDeg( -rollZ );
 
-      // Store device orientation data for dispatch to opener window
-      window.deviceOrientation = fulltiltEuler;
+			// Dispatch a new 'deviceorientation' event based on derived device orientation
+			dispatchDeviceOrientationEvent( fulltiltEuler );
 
-			rotZ = rotation.setFromQuaternion( controls.object.quaternion, 'YXZ' ).z;
-
-			window.deviceOrientation.roll = THREE.Math.radToDeg( -rotZ );
-
-			// DEBUG
-			orientationAlpha.value = printDataValue(window.deviceOrientation.alpha);
-			orientationBeta.value = printDataValue(window.deviceOrientation.beta);
-			orientationGamma.value = printDataValue(window.deviceOrientation.gamma);
+			// Render the controller
+			renderer.render( scene, camera );
 
 			prevTime = time;
 
 		};
 
-		this.play = function (url) {
+		this.play = function( url ) {
 
+			// Rotate the phone in the scene, not the camera as usual
 			var phoneMesh = scene.getObjectByProperty( 'uuid', '33A20938-78BD-4994-8180-E10EC6876880', true );
 
 			// Set up device orientation emulator controls
-			/*controls = new THREE.TrackballControls( camera, scope.dom );
-			controls.target.set(0,0,0);
-			controls.noPan = true;
-			controls.noZoom = true;*/
-
 			controls = new DeviceOrientationEmulatorControls( phoneMesh, scope.dom );
 			controls.enableManualZoom = false;
 			controls.connect();
@@ -180,7 +162,7 @@ var APP = {
 
 		};
 
-		this.stop = function () {
+		this.stop = function() {
 
 			cancelAnimationFrame( request );
 

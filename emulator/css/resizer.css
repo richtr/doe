@@ -1,112 +1,101 @@
 html, body {
-  width: 100%;
-  height: 100%;
-  text-align: center;
-  background: #333 url('../images/black_linen_v2.png') center repeat;
-  overflow: hidden;
-  color: #fff;
-  font-family: Helvetica, Arial, sans-serif;
+		width: 100%;
+		height: 100%;
+		text-align: center;
+		background: #333 url('../images/black_linen_v2.png') center repeat;
+		overflow: hidden;
+		color: #fff;
+		font-family: Helvetica, Arial, sans-serif;
 }
-
-.resizer-page { display: block; height: 100%; }
-
+.resizer-page {
+		display: block;
+		height: 100%;
+}
 a, a:visited {
-  color: inherit;
+		color: inherit;
 }
-
 #resizerFrame {
-  width: 100%;
-  max-width: 320px;
-  height: 100%;
-  max-height: 640px;
-  margin: 0 auto;
-  background: #fff;
-  box-shadow: 0 0 50px #000;
-  border-top: 20px solid #008000;
-  border-bottom: 20px solid #CC0000;
+		width: 100%;
+		max-width: 320px;
+		height: 100%;
+		max-height: 640px;
+		margin: 0 auto;
+		background: #fff;
+		box-shadow: 0 0 50px #000;
+		border-top: 20px solid #008000;
+		border-bottom: 20px solid #CC0000;
 }
-
 #resizerFrame::before {
-  content: "TOP";
-  margin-top: -1em;
+		content: "TOP";
+		margin-top: -1em;
 }
-
 #resizerFrameWrapper {
-  position: relative;
-  height: 100%;
+		position: relative;
+		height: 100%;
 }
-
 #resizer {
-  text-align: center;
-  line-height: 1;
-  position: fixed;
-  top: 0;
-  right: 0;
+		text-align: center;
+		line-height: 1;
+		position: fixed;
+		top: 0;
+		right: 0;
 }
-
 #controller {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 300px;
-  height: 300px;
-  text-align: center;
-  background: #383636;
-  z-index:3;
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 300px;
+		height: 300px;
+		text-align: center;
+		background: #383636;
+		z-index: 3;
 }
-
 #resizer ul {
-  font-size: 13px;
-  display: inline-block;
-  margin: -0.2em auto 0.2em;
-  -webkit-filter: drop-shadow(0 1px 5px rgba(0,0,0,.25));
-  -moz-filter: drop-shadow(0 1px 5px rgba(0,0,0,.25));
-  -ms-filter: drop-shadow(0 1px 5px rgba(0,0,0,.25));
-  -o-filter: drop-shadow(0 1px 5px rgba(0,0,0,.25));
-  filter: drop-shadow(0 1px 5px rgba(0,0,0,.25));
-  -ms-transform: translateZ(0);
-  -o-transform: translateZ(0);
-  -moz-transform: translateZ(0);
-  -webkit-transform: translateZ(0);
-  transform: translateZ(0);
+		font-size: 13px;
+		display: inline-block;
+		margin: -0.2em auto 0.2em;
+		-webkit-filter: drop-shadow(0 1px 5px rgba(0, 0, 0, .25));
+		-moz-filter: drop-shadow(0 1px 5px rgba(0, 0, 0, .25));
+		-ms-filter: drop-shadow(0 1px 5px rgba(0, 0, 0, .25));
+		-o-filter: drop-shadow(0 1px 5px rgba(0, 0, 0, .25));
+		filter: drop-shadow(0 1px 5px rgba(0, 0, 0, .25));
+		-ms-transform: translateZ(0);
+		-o-transform: translateZ(0);
+		-moz-transform: translateZ(0);
+		-webkit-transform: translateZ(0);
+		transform: translateZ(0);
 }
-
 button.rotate i:before, button[data-rotate] i:before {
-  -webkit-transition: all 0.15s linear;
-  -moz-transition: all 0.15s linear;
-  -ms-transition: all 0.15s linear;
-  -o-transition: all 0.15s linear;
-  transition: all 0.15s linear;
+		-webkit-transition: all 0.15s linear;
+		-moz-transition: all 0.15s linear;
+		-ms-transition: all 0.15s linear;
+		-o-transition: all 0.15s linear;
+		transition: all 0.15s linear;
 }
-
 .landscape i:before {
-  -webkit-transform: rotate(-90deg);
-  -moz-transform: rotate(-90deg);
-  -ms-transform: rotate(-90deg);
-  -o-transform: rotate(-90deg);
-  transform: rotate(-90deg);
+		-webkit-transform: rotate(-90deg);
+		-moz-transform: rotate(-90deg);
+		-ms-transform: rotate(-90deg);
+		-o-transform: rotate(-90deg);
+		transform: rotate(-90deg);
 }
-
 [data-max="150"] {
-  font-size: 150px;
+		font-size: 150px;
 }
-
 [data-max="95"] {
-  font-size: 95px;
+		font-size: 95px;
 }
-
 [data-max="30"] {
-  font-size: 30px;
+		font-size: 30px;
 }
-
 @media (max-width: 480px) {
-  [data-min="60"] {
-    font-size: 60px;
-  }
-  [data-min="52"] {
-    font-size: 52px;
-  }
-  [data-min="20"] {
-    font-size: 20px;
-  }
+		[data-min="60"] {
+				font-size: 60px;
+		}
+		[data-min="52"] {
+				font-size: 52px;
+		}
+		[data-min="20"] {
+				font-size: 20px;
+		}
 }

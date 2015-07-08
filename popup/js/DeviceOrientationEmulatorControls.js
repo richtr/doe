@@ -6,9 +6,9 @@
  * Author: Rich Tibbett (http://github.com/richtr)
  * License: The MIT License
  *
-**/
+ **/
 
-var DeviceOrientationEmulatorControls = function ( object, domElement ) {
+var DeviceOrientationEmulatorControls = function( object, domElement ) {
 
 	this.object = object;
 	this.element = domElement || document;
@@ -21,16 +21,19 @@ var DeviceOrientationEmulatorControls = function ( object, domElement ) {
 	this.screenOrientation = window.orientation || 0;
 
 	// Manual rotate override components
-	var startX = 0, startY = 0,
-	    currentX = 0, currentY = 0,
-	    scrollSpeedX, scrollSpeedY,
-	    tmpQuat = new THREE.Quaternion();
+	var startX = 0,
+		startY = 0,
+		currentX = 0,
+		currentY = 0,
+		scrollSpeedX, scrollSpeedY,
+		tmpQuat = new THREE.Quaternion();
 
 	// Manual zoom override components
-	var zoomStart = 1, zoomCurrent = 1,
-	    zoomP1 = new THREE.Vector2(),
-	    zoomP2 = new THREE.Vector2(),
-	    tmpFOV;
+	var zoomStart = 1,
+		zoomCurrent = 1,
+		zoomP1 = new THREE.Vector2(),
+		zoomP2 = new THREE.Vector2(),
+		tmpFOV;
 
 	var CONTROLLER_STATE = {
 		AUTO: 0,
@@ -42,22 +45,22 @@ var DeviceOrientationEmulatorControls = function ( object, domElement ) {
 
 	var CONTROLLER_EVENT = {
 		SCREEN_ORIENTATION: 'orientationchange',
-		MANUAL_CONTROL:     'userinteraction', // userinteractionstart, userinteractionend
-		ZOOM_CONTROL:       'zoom',            // zoomstart, zoomend
-		ROTATE_CONTROL:     'rotate',          // rotatestart, rotateend
+		MANUAL_CONTROL: 'userinteraction', // userinteractionstart, userinteractionend
+		ZOOM_CONTROL: 'zoom', // zoomstart, zoomend
+		ROTATE_CONTROL: 'rotate', // rotatestart, rotateend
 	};
 
 	// Consistent Object Field-Of-View fix components
 	var startClientHeight = window.innerHeight,
-	    startFOVFrustrumHeight = 2000 * Math.tan( THREE.Math.degToRad( ( this.object.fov || 75 ) / 2 ) ),
-	    relativeFOVFrustrumHeight, relativeVerticalFOV;
+		startFOVFrustrumHeight = 2000 * Math.tan( THREE.Math.degToRad( ( this.object.fov || 75 ) / 2 ) ),
+		relativeFOVFrustrumHeight, relativeVerticalFOV;
 
 	var deviceQuat = new THREE.Quaternion();
 
-	var fireEvent = function () {
+	var fireEvent = function() {
 		var eventData;
 
-		return function ( name ) {
+		return function( name ) {
 			eventData = arguments || {};
 
 			eventData.type = name;
@@ -67,7 +70,7 @@ var DeviceOrientationEmulatorControls = function ( object, domElement ) {
 		}.bind( this );
 	}.bind( this )();
 
-	this.constrainObjectFOV = function () {
+	this.constrainObjectFOV = function() {
 		relativeFOVFrustrumHeight = startFOVFrustrumHeight * ( window.innerHeight / startClientHeight );
 
 		relativeVerticalFOV = THREE.Math.radToDeg( 2 * Math.atan( relativeFOVFrustrumHeight / 2000 ) );
@@ -75,13 +78,13 @@ var DeviceOrientationEmulatorControls = function ( object, domElement ) {
 		this.object.fov = relativeVerticalFOV;
 	}.bind( this );
 
-	this.onScreenOrientationChange = function () {
+	this.onScreenOrientationChange = function() {
 		this.screenOrientation = window.orientation || 0;
 
 		fireEvent( CONTROLLER_EVENT.SCREEN_ORIENTATION );
 	}.bind( this );
 
-	this.onDocumentMouseDown = function ( event ) {
+	this.onDocumentMouseDown = function( event ) {
 		event.preventDefault();
 
 		appState = CONTROLLER_STATE.MANUAL_ROTATE;
@@ -102,12 +105,12 @@ var DeviceOrientationEmulatorControls = function ( object, domElement ) {
 		fireEvent( CONTROLLER_EVENT.ROTATE_CONTROL + 'start' );
 	}.bind( this );
 
-	this.onDocumentMouseMove = function ( event ) {
+	this.onDocumentMouseMove = function( event ) {
 		currentX = event.pageX;
 		currentY = event.pageY;
 	}.bind( this );
 
-	this.onDocumentMouseUp = function ( event ) {
+	this.onDocumentMouseUp = function( event ) {
 		this.element.removeEventListener( 'mousemove', this.onDocumentMouseMove, false );
 		this.element.removeEventListener( 'mouseup', this.onDocumentMouseUp, false );
 
@@ -117,7 +120,7 @@ var DeviceOrientationEmulatorControls = function ( object, domElement ) {
 		fireEvent( CONTROLLER_EVENT.ROTATE_CONTROL + 'end' );
 	}.bind( this );
 
-	this.onDocumentTouchStart = function ( event ) {
+	this.onDocumentTouchStart = function( event ) {
 		event.preventDefault();
 		event.stopPropagation();
 
@@ -164,8 +167,8 @@ var DeviceOrientationEmulatorControls = function ( object, domElement ) {
 		}
 	}.bind( this );
 
-	this.onDocumentTouchMove = function ( event ) {
-		switch( event.touches.length ) {
+	this.onDocumentTouchMove = function( event ) {
+		switch ( event.touches.length ) {
 			case 1:
 				currentX = event.touches[ 0 ].pageX;
 				currentY = event.touches[ 0 ].pageY;
@@ -178,7 +181,7 @@ var DeviceOrientationEmulatorControls = function ( object, domElement ) {
 		}
 	}.bind( this );
 
-	this.onDocumentTouchEnd = function ( event ) {
+	this.onDocumentTouchEnd = function( event ) {
 		this.element.removeEventListener( 'touchmove', this.onDocumentTouchMove, false );
 		this.element.removeEventListener( 'touchend', this.onDocumentTouchEnd, false );
 
@@ -201,7 +204,7 @@ var DeviceOrientationEmulatorControls = function ( object, domElement ) {
 		}
 	}.bind( this );
 
-	var createQuaternion = function () {
+	var createQuaternion = function() {
 
 		var finalQuaternion = new THREE.Quaternion();
 
@@ -209,17 +212,17 @@ var DeviceOrientationEmulatorControls = function ( object, domElement ) {
 
 		var screenTransform = new THREE.Quaternion();
 
-		var worldTransform = new THREE.Quaternion( - Math.sqrt(0.5), 0, 0, Math.sqrt(0.5) ); // - PI/2 around the x-axis
+		var worldTransform = new THREE.Quaternion( -Math.sqrt( 0.5 ), 0, 0, Math.sqrt( 0.5 ) ); // - PI/2 around the x-axis
 
 		var minusHalfAngle = 0;
 
-		return function ( alpha, beta, gamma, screenOrientation ) {
+		return function( alpha, beta, gamma, screenOrientation ) {
 
-			deviceEuler.set( beta, alpha, - gamma, 'YXZ' );
+			deviceEuler.set( beta, alpha, -gamma, 'YXZ' );
 
 			finalQuaternion.setFromEuler( deviceEuler );
 
-			minusHalfAngle = - screenOrientation / 2;
+			minusHalfAngle = -screenOrientation / 2;
 
 			screenTransform.set( 0, Math.sin( minusHalfAngle ), 0, Math.cos( minusHalfAngle ) );
 
@@ -233,28 +236,28 @@ var DeviceOrientationEmulatorControls = function ( object, domElement ) {
 
 	}();
 
-	var createRotationMatrix = function () {
+	var createRotationMatrix = function() {
 
 		var finalMatrix = new THREE.Matrix4();
 
 		var deviceEuler = new THREE.Euler();
 		var screenEuler = new THREE.Euler();
-		var worldEuler = new THREE.Euler( - Math.PI / 2, 0, 0, 'YXZ' ); // - PI/2 around the x-axis
+		var worldEuler = new THREE.Euler( -Math.PI / 2, 0, 0, 'YXZ' ); // - PI/2 around the x-axis
 
 		var screenTransform = new THREE.Matrix4();
 
 		var worldTransform = new THREE.Matrix4();
-		worldTransform.makeRotationFromEuler(worldEuler);
+		worldTransform.makeRotationFromEuler( worldEuler );
 
-		return function (alpha, beta, gamma, screenOrientation) {
+		return function( alpha, beta, gamma, screenOrientation ) {
 
-			deviceEuler.set( beta, alpha, - gamma, 'YXZ' );
+			deviceEuler.set( beta, alpha, -gamma, 'YXZ' );
 
 			finalMatrix.identity();
 
 			finalMatrix.makeRotationFromEuler( deviceEuler );
 
-			screenEuler.set( 0, - screenOrientation, 0, 'YXZ' );
+			screenEuler.set( 0, -screenOrientation, 0, 'YXZ' );
 
 			screenTransform.identity();
 
@@ -270,7 +273,7 @@ var DeviceOrientationEmulatorControls = function ( object, domElement ) {
 
 	}();
 
-	this.updateManualMove = function () {
+	this.updateManualMove = function() {
 
 		var lat, lon;
 		var phi, theta;
@@ -284,7 +287,7 @@ var DeviceOrientationEmulatorControls = function ( object, domElement ) {
 
 		var zoomFactor, minZoomFactor = 1; // maxZoomFactor = Infinity
 
-		return function () {
+		return function() {
 
 			objQuat.copy( tmpQuat );
 
@@ -293,14 +296,14 @@ var DeviceOrientationEmulatorControls = function ( object, domElement ) {
 				lat = ( startY - currentY ) * scrollSpeedY;
 				lon = ( startX - currentX ) * scrollSpeedX;
 
-				phi	 = THREE.Math.degToRad( lat );
+				phi = THREE.Math.degToRad( lat );
 				theta = THREE.Math.degToRad( lon );
 
-        // Apply y-based quaternion rotation
+				// Apply y-based quaternion rotation
 				rotQuat.set( 0, Math.sin( theta / 2 ), 0, Math.cos( theta / 2 ) );
 				objQuat.multiply( rotQuat );
 
-        // Apply z-based quaternion rotation
+				// Apply z-based quaternion rotation
 				rotQuat.set( Math.sin( phi / 2 ), 0, 0, Math.cos( phi / 2 ) );
 				objQuat.multiply( rotQuat );
 
@@ -324,7 +327,7 @@ var DeviceOrientationEmulatorControls = function ( object, domElement ) {
 
 				if ( deviceQuat ) {
 
-					tmpZ  = rotation.setFromQuaternion( tmpQuat, 'YXZ' ).z;
+					tmpZ = rotation.setFromQuaternion( tmpQuat, 'YXZ' ).z;
 					realZ = rotation.setFromQuaternion( deviceQuat, 'YXZ' ).z;
 
 					rotQuat.set( 0, 0, Math.sin( ( realZ - tmpZ ) / 2 ), Math.cos( ( realZ - tmpZ ) / 2 ) );
@@ -341,13 +344,13 @@ var DeviceOrientationEmulatorControls = function ( object, domElement ) {
 
 	}();
 
-	this.update = function () {
+	this.update = function() {
 		if ( appState !== CONTROLLER_STATE.AUTO ) {
 			this.updateManualMove();
 		}
 	};
 
-	this.connect = function () {
+	this.connect = function() {
 		window.addEventListener( 'resize', this.constrainObjectFOV, false );
 
 		window.addEventListener( 'orientationchange', this.onScreenOrientationChange, false );
@@ -356,7 +359,7 @@ var DeviceOrientationEmulatorControls = function ( object, domElement ) {
 		this.element.addEventListener( 'touchstart', this.onDocumentTouchStart, false );
 	};
 
-	this.disconnect = function () {
+	this.disconnect = function() {
 		window.removeEventListener( 'resize', this.constrainObjectFOV, false );
 
 		window.removeEventListener( 'orientationchange', this.onScreenOrientationChange, false );
