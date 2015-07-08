@@ -7,14 +7,14 @@ html, body {
 		color: #fff;
 		font-family: Helvetica, Arial, sans-serif;
 }
-.resizer-page {
+.emulator-page {
 		display: block;
 		height: 100%;
 }
 a, a:visited {
 		color: inherit;
 }
-#resizerFrame {
+#emulatorFrame {
 		width: 100%;
 		max-width: 320px;
 		height: 100%;
@@ -25,15 +25,15 @@ a, a:visited {
 		border-top: 20px solid #008000;
 		border-bottom: 20px solid #CC0000;
 }
-#resizerFrame::before {
+#emulatorFrame::before {
 		content: "TOP";
 		margin-top: -1em;
 }
-#resizerFrameWrapper {
+#emulatorFrameWrapper {
 		position: relative;
 		height: 100%;
 }
-#resizer {
+#emulator {
 		text-align: center;
 		line-height: 1;
 		position: fixed;
@@ -52,7 +52,7 @@ a, a:visited {
 		background: #383636;
 		z-index: 3;
 }
-#resizer ul {
+#emulator ul {
 		font-size: 13px;
 		display: inline-block;
 		margin: -0.2em auto 0.2em;

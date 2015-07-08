@@ -12,7 +12,7 @@ window.addEventListener( 'load', function() {
 
 	var urlParam = getParameterByName( 'url' );
 
-	var resizerFrame = document.querySelector( 'iframe#resizerFrame' );
+	var emulatorFrame = document.querySelector( 'iframe#emulatorFrame' );
 
 	if ( urlParam.length > 0 ) {
 		if ( urlParam.substr( 0, 4 ) != 'http' ) {
@@ -20,7 +20,7 @@ window.addEventListener( 'load', function() {
 		}
 		targetUrl = new URL( urlParam );
 		// Load url in iframe
-		resizerFrame.src = urlParam;
+		emulatorFrame.src = urlParam;
 	}
 
 	$( 'body' ).on( 'click', 'button[data-viewport-width]', function( e ) {
@@ -36,7 +36,7 @@ window.addEventListener( 'load', function() {
 		}
 		$( 'button[data-viewport-width]' ).removeClass( 'asphalt active' ).addClass( 'charcoal' );
 		$( this ).addClass( 'asphalt active' ).removeClass( 'charcoal' );
-		$( '#resizerFrame' ).css( {
+		$( '#emulatorFrame' ).css( {
 			'max-width': newWidth,
 			'max-height': newHeight
 		} );
@@ -130,11 +130,11 @@ window.addEventListener( 'load', function() {
 				var roll = json.data[ 'roll' ] || 0;
 				delete json.data[ 'roll' ]; // remove roll attribute from json
 
-				// Post deviceorientation data to resizerFrame window
-				resizerFrame.contentWindow.postMessage( JSON.stringify( json.data ), targetUrl.origin );
+				// Post deviceorientation data to emulatorFrame window
+				emulatorFrame.contentWindow.postMessage( JSON.stringify( json.data ), targetUrl.origin );
 
-				// Apply roll compensation to resizerFrame
-				resizerFrame.style.webkitTransform = resizerFrame.style.msTransform = resizerFrame.style.transform = 'rotate(' + roll + 'deg)';
+				// Apply roll compensation to emulatorFrame
+				emulatorFrame.style.webkitTransform = emulatorFrame.style.msTransform = emulatorFrame.style.transform = 'rotate(' + roll + 'deg)';
 
 				// Store latest data so it can be used if/when 'updatePosition' case runs
 				d = json.data;
