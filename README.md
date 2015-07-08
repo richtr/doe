@@ -1,8 +1,10 @@
 # Device Orientation Emulator
+
 A simple and precise device orientation emulator for web browsers that do not support device orientation events.
 
 ## Demo
-On any web browser that does not support device orientation (e.g. Desktop browsers) open one of the following pages:
+
+In any web browser that does not support device orientation (e.g. Desktop browsers) open one of the following pages:
 
 [https://richtr.github.io/threeVR/examples/vr_basic.html](https://richtr.github.io/threeVR/examples/vr_basic.html)
 
