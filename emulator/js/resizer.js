@@ -135,7 +135,7 @@ window.addEventListener( 'load', function() {
 				resizerFrame.contentWindow.postMessage( JSON.stringify( json.data ), targetUrl.origin );
 
 				// Apply roll compensation to resizerFrame
-				resizerFrame.style.transform = 'rotateZ(' + roll + 'deg)';
+				resizerFrame.style.webkitTransform = resizerFrame.style.msTransform = resizerFrame.style.transform = 'rotate(' + roll + 'deg)';
 
 				// Store latest data so it can be used if/when 'updatePosition' case runs
 				d = json.data;
