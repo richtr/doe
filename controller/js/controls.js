@@ -44,6 +44,12 @@ window.addEventListener( 'load', function() {
 			},
 			'rotateScreen': function( data ) {
 				player.updateScreenOrientation( data );
+
+				if ( window.parent ) {
+					window.parent.postMessage( JSON.stringify( {
+						'action': 'updatePosition'
+					} ), '*' );
+				}
 			}
 		};
 

@@ -196,7 +196,9 @@ var APP = {
 
 			}
 
-			controls.updateScreenOrientation( THREE.Math.degToRad( data.value ) );
+			if (data.updateControls) {
+				controls.updateScreenOrientation( THREE.Math.degToRad( data.value ) );
+			}
 
 		}
 

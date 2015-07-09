@@ -69,22 +69,7 @@ function startEmulator() {
 		currentScreenOrientation += 90;
 		currentScreenOrientation %= 360;
 
-		// Update controller rendering
-		controller.contentWindow.postMessage( JSON.stringify( {
-			'action': 'rotateScreen',
-			'data': {
-				'value': 90, // rotate screen clockwise in 90 degree increments
-				'totalRotation': currentScreenOrientation
-			}
-		} ), selfUrl.origin );
-
-		angle = ( 360 - currentScreenOrientation ) % 360;
-
-		// Notify emulated page that screen orientation has changed
-		deviceFrame.contentWindow.postMessage( JSON.stringify( {
-			'action': 'screenOrientationChange',
-			'data': angle
-		} ), selfUrl.origin );
+		updateScreenOrientation(90, true); // rotate screen clockwise in 90 degree increments
 
 		$( 'button[data-rotate=true]' ).each( function() {
 			//$( this ).toggleClass( 'landscape' );
@@ -97,7 +82,7 @@ function startEmulator() {
 			}
 		} );
 
-		screenOrientationEl.textContent = angle
+		screenOrientationEl.textContent = (360 - currentScreenOrientation) % 360;
 
 	} );
 
@@ -149,7 +134,25 @@ function startEmulator() {
 		}
 	} );
 
-	var d = {};
+	function updateScreenOrientation( deltaAngle, updateControls ) {
+
+		// Update controller rendering
+		controller.contentWindow.postMessage( JSON.stringify( {
+			'action': 'rotateScreen',
+			'data': {
+				'value': deltaAngle,
+				'totalRotation': currentScreenOrientation,
+				'updateControls': updateControls
+			}
+		} ), selfUrl.origin );
+
+		// Notify emulated page that screen orientation has changed
+		deviceFrame.contentWindow.postMessage( JSON.stringify( {
+			'action': 'screenOrientationChange',
+			'data': 360 - currentScreenOrientation
+		} ), selfUrl.origin );
+
+	}
 
 	var orientationAlpha = document.querySelector( '#orientationAlpha' );
 	var orientationBeta = document.querySelector( '#orientationBeta' );
@@ -166,7 +169,7 @@ function startEmulator() {
 				try {
 					var coordsObj = JSON.parse( coords );
 
-					if ( coordsObj.length === 3 && ( coordsObj[ 0 ] || coordsObj[ 1 ] || coordsObj[ 2 ] ) ) {
+					if ( (coordsObj.length === 3 || coordsObj.length === 4) && ( coordsObj[ 0 ] || coordsObj[ 1 ] || coordsObj[ 2 ] ) ) {
 
 						controller.contentWindow.postMessage( JSON.stringify( {
 							'action': 'setCoords',
@@ -176,6 +179,38 @@ function startEmulator() {
 								'gamma': coordsObj[ 2 ] || 0
 							}
 						} ), selfUrl.origin );
+
+						// Use 4th parameter to set the screen orientation
+						if(coordsObj[ 3 ]) {
+							var requestedScreenOrientation = coordsObj[ 3 ] * 1;
+							if(requestedScreenOrientation / 90 > 0 && requestedScreenOrientation / 90 < 4 ) {
+
+								currentScreenOrientation = (360 - requestedScreenOrientation) % 360;
+
+								deviceFrame.contentWindow.screenFrame.onload = function() {
+
+										updateScreenOrientation(currentScreenOrientation, false);
+
+										if(requestedScreenOrientation % 180) {
+
+											$( 'button[data-rotate=true]' ).each( function() {
+												width = $( this ).attr( 'data-viewport-width' );
+												height = $( this ).attr( 'data-viewport-height' );
+												$( this ).attr( 'data-viewport-width', height );
+												$( this ).attr( 'data-viewport-height', width );
+												if ( $( this ).hasClass( 'active' ) ) {
+													$( this ).trigger( 'click' );
+												}
+											} );
+
+										}
+
+										screenOrientationEl.textContent = requestedScreenOrientation;
+
+								};
+
+							}
+						}
 
 					}
 				} catch ( e ) {}
@@ -206,16 +241,15 @@ function startEmulator() {
 			// Apply roll compensation to deviceFrame
 			deviceFrame.style.webkitTransform = deviceFrame.style.msTransform = deviceFrame.style.transform = 'rotate(' + ( roll - currentScreenOrientation ) + 'deg) scale(' + scaleFactor + ')';
 
-			// Store latest data so it can be used if/when 'updatePosition' case runs
-			d = data;
-
 		},
 		'updatePosition': function( data ) {
 
-			// replace current page's URL hash (if History API is supported)
-			if ( 'replaceState' in history ) {
-				history.replaceState( '', '', '#[' + d[ 'alpha' ] + ',' + d[ 'beta' ] + ',' + d[ 'gamma' ] + ']' );
-			}
+			window.setTimeout(function() {
+				// replace current page's URL hash (if History API is supported)
+				if ( 'replaceState' in history ) {
+					history.replaceState( '', '', '#[' + orientationAlpha.textContent + ',' + orientationBeta.textContent + ',' + orientationGamma.textContent + ',' + (360 - currentScreenOrientation) % 360 + ']' );
+				}
+			}, 100);
 
 		},
 		'lockScreenOrientation': function( data ) {
