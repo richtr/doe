@@ -75,7 +75,7 @@ window.addEventListener( 'load', function() {
 			case 32:
 			case 56:
 			case 82:
-				$( '.rotate' ).trigger( 'click' );
+				//$( '.rotate' ).trigger( 'click' );
 				break;
 		}
 	} );
