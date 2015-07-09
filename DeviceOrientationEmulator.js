@@ -165,82 +165,103 @@
 
 	function overrideScreenOrientationAPI() {
 
-		if ( hasScreenOrientationAPI ) {
+		// If browser does not support the Screen Orientation API, add a stub for it
+		if ( !hasScreenOrientationAPI ) {
+			if ( !window.screen ) window.screen = {};
 
-			// Override Screen Orientation API 'angle' built-in getter
-			window.screen.orientation.__defineGetter__( 'angle', function() {
+			function Emitter() {
+				var eventTarget = document.createDocumentFragment();
 
-				return screenOrientationAngle;
+				function delegate( method ) {
+					this[ method ] = eventTarget[ method ].bind( eventTarget );
+				}
 
-			} );
+				[
+					"addEventListener",
+					"dispatchEvent",
+					"removeEventListener"
+				].forEach( delegate, this );
+			}
 
-			// Override Screen Orientation API 'type' built-in getter
-			window.screen.orientation.__defineGetter__( 'type', function() {
+			function ScreenOrientation() {
+				Emitter.call( this );
+			}
 
-				return screenOrientationType;
+			if ( !window.screen.orientation ) window.screen.orientation = new ScreenOrientation();
+		}
 
-			} );
+		// Override Screen Orientation API 'angle' built-in getter
+		window.screen.orientation.__defineGetter__( 'angle', function() {
 
-			window.screen.orientation.lock = function( val ) {
+			return screenOrientationAngle;
 
-				var p = new Promise( function( resolve, reject ) {
+		} );
 
-					var angle = typeToAngle[ val ];
+		// Override Screen Orientation API 'type' built-in getter
+		window.screen.orientation.__defineGetter__( 'type', function() {
 
-					if ( angle === undefined || angle === null ) {
-						window.setTimeout( function() {
-							reject( "Cannot lock to given screen orientation" ); // reject as invalid
-						}, 1 );
-						return;
-					}
+			return screenOrientationType;
 
-					// Update window.orientation
-					window.orientation = angle;
+		} );
 
-					// Fire a 'orientationchange' event at window
-					var event = document.createEvent( 'Event' );
-					event.initEvent( 'orientationchange', true, true );
-					window.dispatchEvent( event );
+		window.screen.orientation.__proto__.lock = function( val ) {
 
-					// Update window.screen.orientation.angle
-					if ( !angleToType[ angle ] ) return;
-					screenOrientationAngle = angle;
-					// Also update window.screen.orientation.type
-					screenOrientationType = angleToType[ angle ];
+			var p = new Promise( function( resolve, reject ) {
 
-					// Fire a 'change' event at window.screen.orientation
-					var event = document.createEvent( 'Event' );
-					event.initEvent( 'change', true, true );
-					window.screen.orientation.dispatchEvent( event );
+				var angle = typeToAngle[ val ];
 
-					// Lock the screen orientation icon in parent emulator
-					if ( !window.parent ) return;
-
-					window.parent.postMessage( JSON.stringify( {
-						'action': 'lockScreenOrientation',
-						'data': angle
-					} ), '*' );
-
+				if ( angle === undefined || angle === null ) {
 					window.setTimeout( function() {
-						resolve();
+						reject( "Cannot lock to given screen orientation" ); // reject as invalid
 					}, 1 );
+					return;
+				}
 
-				} );
+				// Update window.orientation
+				window.orientation = angle;
 
-				return p;
+				// Fire a 'orientationchange' event at window
+				var event = document.createEvent( 'Event' );
+				event.initEvent( 'orientationchange', true, true );
+				window.dispatchEvent( event );
 
-			};
+				// Update window.screen.orientation.angle
+				if ( !angleToType[ angle ] ) return;
+				screenOrientationAngle = angle;
+				// Also update window.screen.orientation.type
+				screenOrientationType = angleToType[ angle ];
 
-			window.screen.orientation.__proto__.unlock = function( val ) {
+				// Fire a 'change' event at window.screen.orientation
+				var event = document.createEvent( 'Event' );
+				event.initEvent( 'change', true, true );
+				window.screen.orientation.dispatchEvent( event );
 
-				// Unlock the screen orientation icon in parent emulator
+				// Lock the screen orientation icon in parent emulator
 				if ( !window.parent ) return;
 
 				window.parent.postMessage( JSON.stringify( {
-					'action': 'unlockScreenOrientation'
+					'action': 'lockScreenOrientation',
+					'data': angle
 				} ), '*' );
 
-			}
+				window.setTimeout( function() {
+					resolve();
+				}, 1 );
+
+			} );
+
+			return p;
+
+		};
+
+		window.screen.orientation.__proto__.unlock = function( val ) {
+
+			// Unlock the screen orientation icon in parent emulator
+			if ( !window.parent ) return;
+
+			window.parent.postMessage( JSON.stringify( {
+				'action': 'unlockScreenOrientation'
+			} ), '*' );
 
 		}
 
