@@ -49,9 +49,18 @@
 			{
 				"uuid": "208B47A6-CB2C-4671-A5A0-3D72952CFE19",
 				"type": "PlaneBufferGeometry",
-				"name": "screen_points_geometry",
+				"name": "horizontal_screen_points_geometry",
 				"width": 405,
 				"height": 36,
+				"widthSegments": 1,
+				"heightSegments": 1
+			},
+			{
+				"uuid": "108B47A6-CB2C-4671-A5A0-3D72952CFE19",
+				"type": "PlaneBufferGeometry",
+				"name": "vertical_screen_points_geometry",
+				"width": 36,
+				"height": 712,
 				"widthSegments": 1,
 				"heightSegments": 1
 			}],
@@ -175,12 +184,66 @@
 											"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,-338,1,1]
 										},
 										{
+											"uuid": "81F12A54-9A47-451F-8820-21A8CD28668E",
+											"type": "Mesh",
+											"name": "screen_top_inverse",
+											"geometry": "208B47A6-CB2C-4671-A5A0-3D72952CFE19",
+											"material": "4AD01FD1-2363-4CCD-8732-AFF618DCEAAB",
+											"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,-338,1,1],
+											"visible": false
+										},
+										{
 											"uuid": "7BF12A54-9A47-451F-8820-21A8CD28668E",
 											"type": "Mesh",
 											"name": "screen_bottom",
 											"geometry": "208B47A6-CB2C-4671-A5A0-3D72952CFE19",
 											"material": "4AD01FD1-2363-4CCD-8732-AFF618DCEAAB",
 											"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,338,1,1]
+										},
+										{
+											"uuid": "72F12A54-9A47-451F-8820-21A8CD28668E",
+											"type": "Mesh",
+											"name": "screen_bottom_inverse",
+											"geometry": "208B47A6-CB2C-4671-A5A0-3D72952CFE19",
+											"material": "5AD01FD1-2363-4CCD-8732-AFF618DCEAAB",
+											"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,338,1,1],
+											"visible": false
+										},
+										{
+											"uuid": "9BF12A54-9A47-451F-8820-21A8CD28668E",
+											"type": "Mesh",
+											"name": "screen_left",
+											"geometry": "108B47A6-CB2C-4671-A5A0-3D72952CFE19",
+											"material": "5AD01FD1-2363-4CCD-8732-AFF618DCEAAB",
+											"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,202,0,1,1],
+											"visible": false
+										},
+										{
+											"uuid": "93F12A54-9A47-451F-8820-21A8CD28668E",
+											"type": "Mesh",
+											"name": "screen_left_inverse",
+											"geometry": "108B47A6-CB2C-4671-A5A0-3D72952CFE19",
+											"material": "4AD01FD1-2363-4CCD-8732-AFF618DCEAAB",
+											"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,202,0,1,1],
+											"visible": false
+										},
+										{
+											"uuid": "ABF12A54-9A47-451F-8820-21A8CD28668E",
+											"type": "Mesh",
+											"name": "screen_right",
+											"geometry": "108B47A6-CB2C-4671-A5A0-3D72952CFE19",
+											"material": "4AD01FD1-2363-4CCD-8732-AFF618DCEAAB",
+											"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,-202,0,1,1],
+											"visible": false
+										},
+										{
+											"uuid": "A4F12A54-9A47-451F-8820-21A8CD28668E",
+											"type": "Mesh",
+											"name": "screen_right_inverse",
+											"geometry": "108B47A6-CB2C-4671-A5A0-3D72952CFE19",
+											"material": "5AD01FD1-2363-4CCD-8732-AFF618DCEAAB",
+											"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,-202,0,1,1],
+											"visible": false
 										}]
 								}]
 						}]

@@ -51,14 +51,17 @@ window.addEventListener( 'load', function() {
 
 	$( 'body' ).on( 'click', 'button.rotate', function( e ) {
 
+		currentScreenOrientation += 90;
+		currentScreenOrientation %= 360;
+
 		// Update controller rendering
 		controller.contentWindow.postMessage( JSON.stringify( {
 			'action': 'rotateScreen',
-			'data': 90 // rotate screen clockwise in 90 degree increments
+			'data': {
+				'value': 90, // rotate screen clockwise in 90 degree increments
+				'totalRotation': currentScreenOrientation
+			}
 		} ), selfUrl.origin );
-
-		currentScreenOrientation += 90;
-		currentScreenOrientation %= 360;
 
 		angle = ( 360 - currentScreenOrientation ) % 360;
 

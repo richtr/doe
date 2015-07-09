@@ -136,9 +136,67 @@ var APP = {
 
 		}
 
-		this.updateScreenOrientation = function (data ) {
+		this.updateScreenOrientation = function( data ) {
 
-			controls.updateScreenOrientation(THREE.Math.degToRad(data));
+			var screenTop = scene.getObjectByProperty( 'name', 'screen_top', true );
+			var screenBottom = scene.getObjectByProperty( 'name', 'screen_bottom', true );
+			var screenTopInv = scene.getObjectByProperty( 'name', 'screen_top_inverse', true );
+			var screenBottomInv = scene.getObjectByProperty( 'name', 'screen_bottom_inverse', true );
+
+			var screenLeft = scene.getObjectByProperty( 'name', 'screen_left', true );
+			var screenRight = scene.getObjectByProperty( 'name', 'screen_right', true );
+			var screenLeftInv = scene.getObjectByProperty( 'name', 'screen_left_inverse', true );
+			var screenRightInv = scene.getObjectByProperty( 'name', 'screen_right_inverse', true );
+
+			if ( data.totalRotation % 180 !== 0 ) {
+
+				screenTop.visible = false;
+				screenBottom.visible = false;
+				screenTopInv.visible = false;
+				screenBottomInv.visible = false;
+
+				if ( data.totalRotation == 90 ) {
+
+					screenLeft.visible = true;
+					screenRight.visible = true;
+					screenLeftInv.visible = false;
+					screenRightInv.visible = false;
+
+				} else {
+
+					screenLeft.visible = false;
+					screenRight.visible = false;
+					screenLeftInv.visible = true;
+					screenRightInv.visible = true;
+
+				}
+
+			} else {
+
+				screenLeft.visible = false;
+				screenRight.visible = false;
+				screenLeftInv.visible = false;
+				screenRightInv.visible = false;
+
+				if ( data.totalRotation == 180 ) {
+
+					screenTop.visible = false;
+					screenBottom.visible = false;
+					screenTopInv.visible = true;
+					screenBottomInv.visible = true;
+
+				} else {
+
+					screenTop.visible = true;
+					screenBottom.visible = true;
+					screenTopInv.visible = false;
+					screenBottomInv.visible = false;
+
+				}
+
+			}
+
+			controls.updateScreenOrientation( THREE.Math.degToRad( data.value ) );
 
 		}
 
