@@ -57,28 +57,20 @@ window.addEventListener( 'load', function() {
 		} );
 	} );
 
+	// Add keyboard shortcuts to switch in-emulator device type
 	$( document ).on( 'keyup', function( e ) {
 		switch ( e.keyCode ) {
-			case 49:
-				$( '[data-device="fullscreen"]' ).trigger( 'click' );
+			case 46:
+				$( '[data-device="iphone"]' ).trigger( 'click' );
 				break;
-			case 50:
-				$( '[data-device="desktop"]' ).trigger( 'click' );
-				break;
-			case 51:
-				$( '[data-device="macbook"]' ).trigger( 'click' );
-				break;
-			case 52:
-				$( '[data-device="ipad"]' ).trigger( 'click' );
-				break;
-			case 53:
-				$( '[data-device="tablet"]' ).trigger( 'click' );
-				break;
-			case 54:
+			case 47:
 				$( '[data-device="android"]' ).trigger( 'click' );
 				break;
-			case 55:
-				$( '[data-device="iphone"]' ).trigger( 'click' );
+			case 48:
+				$( '[data-device="tablet"]' ).trigger( 'click' );
+				break;
+			case 49:
+				$( '[data-device="ipad"]' ).trigger( 'click' );
 				break;
 			case 32:
 			case 56:
