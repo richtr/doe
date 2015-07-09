@@ -1,20 +1,13 @@
 window.addEventListener( 'load', function() {
 
 	var selfUrl = new URL( window.location );
-	var targetUrl;
 
-	var urlParam = getParameterByName( 'url' );
+	var controller = document.querySelector( '#controller' );
 
-	var emulatorFrame = document.querySelector( 'iframe#emulatorFrame' );
+	var deviceFrame = document.querySelector( 'iframe#deviceFrame' );
 
-	if ( urlParam.length > 0 ) {
-		if ( urlParam.substr( 0, 4 ) != 'http' ) {
-			urlParam = 'http://' + urlParam;
-		}
-		targetUrl = new URL( urlParam );
-		// Load url in iframe
-		emulatorFrame.src = urlParam;
-	}
+	// Load target in screen iframe
+	deviceFrame.src = "screen.html" + location.search;
 
 	$( 'body' ).on( 'click', 'button[data-viewport-width]', function( e ) {
 		if ( $( this ).attr( 'data-viewport-width' ) == '100%' ) {
@@ -29,17 +22,54 @@ window.addEventListener( 'load', function() {
 		}
 		$( 'button[data-viewport-width]' ).removeClass( 'asphalt active' ).addClass( 'charcoal' );
 		$( this ).addClass( 'asphalt active' ).removeClass( 'charcoal' );
-		$( '#emulatorFrame' ).css( {
+		$( '#deviceFrame' ).css( {
 			'max-width': newWidth,
 			'max-height': newHeight
 		} );
 		e.preventDefault();
+
+		var newDimension;
+		// Take the larger of the two values
+		if ( parseInt( newWidth, 10 ) >= parseInt( newHeight, 10 ) ) {
+			newDimension = newWidth;
+		} else {
+			newDimension = newHeight;
+		}
+
+		// Relay new dimensions on to deviceFrame
+		deviceFrame.contentWindow.postMessage( JSON.stringify( {
+			'action': 'updateScreenDimensions',
+			'data': {
+				'newWidth': newDimension,
+				'newHeight': newDimension
+			}
+		} ), selfUrl.origin );
 		return false;
 	} );
 
+	var currentScreenOrientation = 0;
+
 	$( 'body' ).on( 'click', 'button.rotate', function( e ) {
+
+		// Update controller rendering
+		controller.contentWindow.postMessage( JSON.stringify( {
+			'action': 'rotateScreen',
+			'data': 90 // rotate screen clockwise in 90 degree increments
+		} ), selfUrl.origin );
+
+		currentScreenOrientation += 90;
+		currentScreenOrientation %= 360;
+
+		angle = ( 360 - currentScreenOrientation ) % 360;
+
+		// Notify emulated page that screen orientation has changed
+		deviceFrame.contentWindow.postMessage( JSON.stringify( {
+			'action': 'screenOrientationChange',
+			'data': angle
+		} ), selfUrl.origin );
+
 		$( 'button[data-rotate=true]' ).each( function() {
-			$( this ).toggleClass( 'landscape' );
+			//$( this ).toggleClass( 'landscape' );
 			width = $( this ).attr( 'data-viewport-width' );
 			height = $( this ).attr( 'data-viewport-height' );
 			$( this ).attr( 'data-viewport-width', height );
@@ -48,6 +78,9 @@ window.addEventListener( 'load', function() {
 				$( this ).trigger( 'click' );
 			}
 		} );
+
+		screenOrientationEl.textContent = angle
+
 	} );
 
 	// Add keyboard shortcuts to switch in-emulator device type
@@ -75,10 +108,14 @@ window.addEventListener( 'load', function() {
 
 	var d = {};
 
+	var orientationAlpha = document.querySelector( '#orientationAlpha' );
+	var orientationBeta = document.querySelector( '#orientationBeta' );
+	var orientationGamma = document.querySelector( '#orientationGamma' );
+
+	var screenOrientationEl = document.querySelector( '#screenOrientation' );
+
 	var actions = {
 		'connect': function( data ) {
-
-			var controller = document.querySelector( '#controller' );
 
 			// If any deviceorientation URL params are provided, send them to the controller
 			if ( selfUrl.hash.length > 6 ) {
@@ -109,14 +146,22 @@ window.addEventListener( 'load', function() {
 		},
 		'newData': function( data ) {
 
+			// Print deviceorientation data values in GUI
+			orientationAlpha.textContent = printDataValue( data.alpha );
+			orientationBeta.textContent = printDataValue( data.beta );
+			orientationGamma.textContent = printDataValue( data.gamma );
+
 			var roll = data[ 'roll' ] || 0;
 			delete data[ 'roll' ]; // remove roll attribute from json
 
-			// Post deviceorientation data to emulatorFrame window
-			emulatorFrame.contentWindow.postMessage( JSON.stringify( data ), targetUrl.origin );
+			// Post deviceorientation data to deviceFrame window
+			deviceFrame.contentWindow.postMessage( JSON.stringify( {
+				'action': 'deviceorientation',
+				'data': data
+			} ), selfUrl.origin );
 
-			// Apply roll compensation to emulatorFrame
-			emulatorFrame.style.webkitTransform = emulatorFrame.style.msTransform = emulatorFrame.style.transform = 'rotate(' + roll + 'deg)';
+			// Apply roll compensation to deviceFrame
+			deviceFrame.style.webkitTransform = deviceFrame.style.msTransform = deviceFrame.style.transform = 'rotate(' + ( roll - currentScreenOrientation ) + 'deg)';
 
 			// Store latest data so it can be used if/when 'updatePosition' case runs
 			d = data;
@@ -128,6 +173,40 @@ window.addEventListener( 'load', function() {
 			if ( 'replaceState' in history ) {
 				history.replaceState( '', '', '#[' + d[ 'alpha' ] + ',' + d[ 'beta' ] + ',' + d[ 'gamma' ] + ']' );
 			}
+
+		},
+		'lockScreenOrientation': function( data ) {
+
+			var btn = $( '.rotate' );
+			var btnIcon = $( 'i', btn );
+
+			var angle = data;
+
+			var currentAngle = ( 360 - currentScreenOrientation ) % 360;
+			if ( currentAngle == 0 ) currentAngle = 360;
+
+			var clickNumber = ( currentAngle / 90 ) - ( angle / 90 );
+			if ( clickNumber < 0 ) clickNumber *= -1;
+
+			btn.prop( "disabled", false );
+
+			if ( clickNumber < 4 ) {
+				for ( var i = 0; i < clickNumber; i++ ) {
+					btn.trigger( 'click' );
+				}
+			}
+
+			btn.prop( "disabled", true ).attr( "title", "Screen Rotation is locked by page" );
+			btnIcon.addClass( 'icon-lock' ).removeClass( 'icon-rotate-left' );
+
+		},
+		'unlockScreenOrientation': function( data ) {
+
+			var btn = $( 'button.rotate' );
+			var btnIcon = $( 'i', btn );
+
+			btnIcon.addClass( 'icon-rotate-left' ).removeClass( 'icon-lock' );
+			btn.attr( "title", "Rotate the Screen" ).prop( "disabled", false );
 
 		}
 	}

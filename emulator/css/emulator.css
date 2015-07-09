@@ -14,7 +14,7 @@ html, body {
 a, a:visited {
 		color: inherit;
 }
-#emulatorFrame {
+#deviceFrame {
 		width: 100%;
 		max-width: 320px;
 		height: 100%;
@@ -25,11 +25,7 @@ a, a:visited {
 		border-top: 20px solid #008000;
 		border-bottom: 20px solid #CC0000;
 }
-#emulatorFrame::before {
-		content: "TOP";
-		margin-top: -1em;
-}
-#emulatorFrameWrapper {
+#deviceFrameWrapper {
 		position: relative;
 		height: 100%;
 }
@@ -67,6 +63,25 @@ a, a:visited {
 		-webkit-transform: translateZ(0);
 		transform: translateZ(0);
 }
+
+div.info {
+	display: block;
+	font-family: Helvetica, Arial, sans-serif;
+	font-size: 11px;
+	height: 27.5px;
+	padding: 8px 20px;
+	margin: 0 10px;
+
+	background-color: #383636;
+	color: #cccccc;
+}
+div.info span {
+	display: inline-block;
+	width: 50px;
+	height: 11px;
+	overflow: hidden;
+}
+
 button.rotate i:before, button[data-rotate] i:before {
 		-webkit-transition: all 0.15s linear;
 		-moz-transition: all 0.15s linear;

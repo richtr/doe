@@ -136,6 +136,12 @@ var APP = {
 
 		}
 
+		this.updateScreenOrientation = function (data ) {
+
+			controls.updateScreenOrientation(THREE.Math.degToRad(data));
+
+		}
+
 		var dispatch = function( array, event ) {
 
 			for ( var i = 0, l = array.length; i < l; i++ ) {

@@ -18,8 +18,6 @@ var DeviceOrientationEmulatorControls = function( object, domElement ) {
 
 	this.useQuaternions = true; // use quaternions for orientation calculation by default
 
-	this.screenOrientation = window.orientation || 0;
-
 	// Manual rotate override components
 	var startX = 0,
 		startY = 0,
@@ -44,7 +42,6 @@ var DeviceOrientationEmulatorControls = function( object, domElement ) {
 	var appState = CONTROLLER_STATE.AUTO;
 
 	var CONTROLLER_EVENT = {
-		SCREEN_ORIENTATION: 'orientationchange',
 		MANUAL_CONTROL: 'userinteraction', // userinteractionstart, userinteractionend
 		ZOOM_CONTROL: 'zoom', // zoomstart, zoomend
 		ROTATE_CONTROL: 'rotate', // rotatestart, rotateend
@@ -76,12 +73,6 @@ var DeviceOrientationEmulatorControls = function( object, domElement ) {
 		relativeVerticalFOV = THREE.Math.radToDeg( 2 * Math.atan( relativeFOVFrustrumHeight / 2000 ) );
 
 		this.object.fov = relativeVerticalFOV;
-	}.bind( this );
-
-	this.onScreenOrientationChange = function() {
-		this.screenOrientation = window.orientation || 0;
-
-		fireEvent( CONTROLLER_EVENT.SCREEN_ORIENTATION );
 	}.bind( this );
 
 	this.onDocumentMouseDown = function( event ) {
@@ -206,75 +197,6 @@ var DeviceOrientationEmulatorControls = function( object, domElement ) {
 		}
 	}.bind( this );
 
-	var createQuaternion = function() {
-
-		var finalQuaternion = new THREE.Quaternion();
-
-		var deviceEuler = new THREE.Euler();
-
-		var screenTransform = new THREE.Quaternion();
-
-		var worldTransform = new THREE.Quaternion( -Math.sqrt( 0.5 ), 0, 0, Math.sqrt( 0.5 ) ); // - PI/2 around the x-axis
-
-		var minusHalfAngle = 0;
-
-		return function( alpha, beta, gamma, screenOrientation ) {
-
-			deviceEuler.set( beta, alpha, -gamma, 'YXZ' );
-
-			finalQuaternion.setFromEuler( deviceEuler );
-
-			minusHalfAngle = -screenOrientation / 2;
-
-			screenTransform.set( 0, Math.sin( minusHalfAngle ), 0, Math.cos( minusHalfAngle ) );
-
-			finalQuaternion.multiply( screenTransform );
-
-			finalQuaternion.multiply( worldTransform );
-
-			return finalQuaternion;
-
-		}
-
-	}();
-
-	var createRotationMatrix = function() {
-
-		var finalMatrix = new THREE.Matrix4();
-
-		var deviceEuler = new THREE.Euler();
-		var screenEuler = new THREE.Euler();
-		var worldEuler = new THREE.Euler( -Math.PI / 2, 0, 0, 'YXZ' ); // - PI/2 around the x-axis
-
-		var screenTransform = new THREE.Matrix4();
-
-		var worldTransform = new THREE.Matrix4();
-		worldTransform.makeRotationFromEuler( worldEuler );
-
-		return function( alpha, beta, gamma, screenOrientation ) {
-
-			deviceEuler.set( beta, alpha, -gamma, 'YXZ' );
-
-			finalMatrix.identity();
-
-			finalMatrix.makeRotationFromEuler( deviceEuler );
-
-			screenEuler.set( 0, -screenOrientation, 0, 'YXZ' );
-
-			screenTransform.identity();
-
-			screenTransform.makeRotationFromEuler( screenEuler );
-
-			finalMatrix.multiply( screenTransform );
-
-			finalMatrix.multiply( worldTransform );
-
-			return finalMatrix;
-
-		}
-
-	}();
-
 	this.updateManualMove = function() {
 
 		var lat, lon;
@@ -352,10 +274,18 @@ var DeviceOrientationEmulatorControls = function( object, domElement ) {
 		}
 	};
 
+	this.updateScreenOrientation = function(radians) {
+		var screenTransform = new THREE.Quaternion();
+		var minusHalfAngle = 0;
+
+		// Apply screen rotation
+		minusHalfAngle = -radians / 2;
+		screenTransform.set( 0, 0, Math.sin( minusHalfAngle ), Math.cos( minusHalfAngle ) );
+		this.object.quaternion.multiply( screenTransform );
+	};
+
 	this.connect = function() {
 		window.addEventListener( 'resize', this.constrainObjectFOV, false );
-
-		window.addEventListener( 'orientationchange', this.onScreenOrientationChange, false );
 
 		this.element.addEventListener( 'mousedown', this.onDocumentMouseDown, false );
 		this.element.addEventListener( 'touchstart', this.onDocumentTouchStart, false );
@@ -363,8 +293,6 @@ var DeviceOrientationEmulatorControls = function( object, domElement ) {
 
 	this.disconnect = function() {
 		window.removeEventListener( 'resize', this.constrainObjectFOV, false );
-
-		window.removeEventListener( 'orientationchange', this.onScreenOrientationChange, false );
 
 		this.element.removeEventListener( 'mousedown', this.onDocumentMouseDown, false );
 		this.element.removeEventListener( 'touchstart', this.onDocumentTouchStart, false );

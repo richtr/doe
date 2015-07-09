@@ -14,7 +14,7 @@
 
 ( function() {
 
-	var emulatorUrl = new URL('https://richtr.github.io/deviceorientationemulator/emulator');
+	var emulatorUrl = new URL( 'https://richtr.github.io/deviceorientationemulator/emulator' );
 
 	function runDetection() {
 
@@ -34,13 +34,13 @@
 
 			swalJSEl.onload = function() {
 				swal( {
-						title: "No compass detected.",
-						text: "This page is built for devices that emit device orientation events. If you would still like to try this page you can use an emulator.",
-						type: "error",
+						title: 'No compass detected.',
+						text: 'This page is built for devices that emit device orientation events. If you would still like to try this page you can use an emulator.',
+						type: 'error',
 						showCancelButton: true,
-						confirmButtonColor: "#DD6B55",
-						confirmButtonText: "Open in the emulator",
-						cancelButtonText: "Cancel",
+						confirmButtonColor: '#DD6B55',
+						confirmButtonText: 'Open in the emulator',
+						cancelButtonText: 'Cancel',
 						closeOnConfirm: true
 					},
 					function() {
@@ -71,24 +71,53 @@
 
 	}
 
+	var actions = {
+		'deviceorientation': function( data ) {
+
+			var event = document.createEvent( 'Event' );
+			event.initEvent( 'deviceorientation', true, true );
+
+			for ( var key in data ) event[ key ] = data[ key ];
+			event[ 'simulation' ] = true; // add 'simulated event' flag
+
+			window.dispatchEvent( event );
+
+		},
+		'screenOrientationChange': function( data ) {
+
+			// Update window.orientation
+			window.orientation = data;
+
+			// Fire a 'orientationchange' event at window
+			var event = document.createEvent( 'Event' );
+			event.initEvent( 'orientationchange', true, true );
+			window.dispatchEvent( event );
+
+			// Update window.screen.orientation.angle
+			if ( !angleToType[ data ] ) return;
+			screenOrientationAngle = data;
+			// Also update window.screen.orientation.type
+			screenOrientationType = angleToType[ data ];
+
+			// Fire a 'change' event at window.screen.orientation
+			var event = document.createEvent( 'Event' );
+			event.initEvent( 'change', true, true );
+			window.screen.orientation.dispatchEvent( event );
+
+		}
+	};
+
 	function runEmulation() {
 
 		var listener = function( event ) {
 			if ( event.origin !== emulatorUrl.origin ) return;
 
-			try {
-				var json = JSON.parse( event.data );
+			var json = JSON.parse( event.data );
 
-				var event = document.createEvent( 'Event' );
-				event.initEvent( 'deviceorientation', true, true );
+			if ( !json.action || !actions[ json.action ] ) return;
 
-				for ( var key in json ) event[ key ] = json[ key ];
-				event[ 'simulation' ] = true; // add 'simulated event' flag
+			actions[ json.action ]( json.data );
 
-				window.dispatchEvent( event );
-			} catch ( e ) {
-				console[ console.error ? 'error' : 'log' ]( e );
-			}
 		};
 
 		window.addEventListener( 'message', listener, false );
@@ -105,5 +134,129 @@
 	} else {
 		window.addEventListener( 'load', runDetection, false );
 	}
+
+	// *** START Screen Orientation API emulator
+
+	var angleToType = {
+		'0': 'portrait-primary',
+		'90': 'landscape-primary',
+		'180': 'portrait-secondary',
+		'270': 'landscape-secondary',
+		// Aliases
+		'-90': 'landscape-secondary',
+		'-180': 'portrait-secondary',
+	};
+	var typeToAngle = {
+		'portrait-primary': 0,
+		'portrait-secondary': 180,
+		'landscape-primary': 90,
+		'landscape-secondary': 270,
+		// Additional types
+		'any': 0,
+		'natural': 0,
+		'landscape': 90,
+		'portrait': 0
+	};
+
+	var screenOrientationAngle = 0;
+	var screenOrientationType = 'portrait-primary';
+
+	var hasScreenOrientationAPI = window.screen && window.screen.orientation ? true : false;
+
+	function overrideScreenOrientationAPI() {
+
+		if ( hasScreenOrientationAPI ) {
+
+			// Override Screen Orientation API 'angle' built-in getter
+			window.screen.orientation.__defineGetter__( 'angle', function() {
+
+				return screenOrientationAngle;
+
+			} );
+
+			// Override Screen Orientation API 'type' built-in getter
+			window.screen.orientation.__defineGetter__( 'type', function() {
+
+				return screenOrientationType;
+
+			} );
+
+			window.screen.orientation.lock = function( val ) {
+
+				var p = new Promise( function( resolve, reject ) {
+
+					var angle = typeToAngle[ val ];
+
+					if ( angle === undefined || angle === null ) {
+						window.setTimeout( function() {
+							reject( "Cannot lock to given screen orientation" ); // reject as invalid
+						}, 1 );
+						return;
+					}
+
+					// Update window.orientation
+					window.orientation = angle;
+
+					// Fire a 'orientationchange' event at window
+					var event = document.createEvent( 'Event' );
+					event.initEvent( 'orientationchange', true, true );
+					window.dispatchEvent( event );
+
+					// Update window.screen.orientation.angle
+					if ( !angleToType[ angle ] ) return;
+					screenOrientationAngle = angle;
+					// Also update window.screen.orientation.type
+					screenOrientationType = angleToType[ angle ];
+
+					// Fire a 'change' event at window.screen.orientation
+					var event = document.createEvent( 'Event' );
+					event.initEvent( 'change', true, true );
+					window.screen.orientation.dispatchEvent( event );
+
+					// Lock the screen orientation icon in parent emulator
+					if ( !window.parent ) return;
+
+					window.parent.postMessage( JSON.stringify( {
+						'action': 'lockScreenOrientation',
+						'data': angle
+					} ), '*' );
+
+					window.setTimeout( function() {
+						resolve();
+					}, 1 );
+
+				} );
+
+				return p;
+
+			};
+
+			window.screen.orientation.__proto__.unlock = function( val ) {
+
+				// Unlock the screen orientation icon in parent emulator
+				if ( !window.parent ) return;
+
+				window.parent.postMessage( JSON.stringify( {
+					'action': 'unlockScreenOrientation'
+				} ), '*' );
+
+			}
+
+		}
+
+	}
+
+	// Inject Screen Orientation API shim ASAP when running in emulator
+	if ( window.parent && window.parent !== window ) {
+
+		var parentUrl = new URL( document.referrer );
+
+		if ( parentUrl.origin == emulatorUrl.origin ) {
+			overrideScreenOrientationAPI();
+		}
+
+	}
+
+	// *** END Screen Orientation API emulator
 
 } )();

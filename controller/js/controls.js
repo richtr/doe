@@ -16,18 +16,9 @@ window.addEventListener( 'load', function() {
 			player.setSize( window.innerWidth, window.innerHeight );
 		} );
 
-		var orientationAlpha = document.querySelector( '#orientationAlpha' );
-		var orientationBeta = document.querySelector( '#orientationBeta' );
-		var orientationGamma = document.querySelector( '#orientationGamma' );
-
 		// Listen for device orientation events fired from the emulator
 		// and dispatch them on to the parent window
 		window.addEventListener( 'deviceorientation', function( event ) {
-
-			// Print deviceorientation data values in GUI
-			orientationAlpha.value = printDataValue( event.alpha );
-			orientationBeta.value = printDataValue( event.beta );
-			orientationGamma.value = printDataValue( event.gamma );
 
 			if ( !window.parent ) return;
 
@@ -50,6 +41,9 @@ window.addEventListener( 'load', function() {
 			},
 			'setCoords': function( data ) {
 				player.setManualOrientation( data.alpha, data.beta, data.gamma );
+			},
+			'rotateScreen': function( data ) {
+				player.updateScreenOrientation( data );
 			}
 		};
 

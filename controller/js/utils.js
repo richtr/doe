@@ -1,18 +1,3 @@
-function printDataValue( input ) {
-	if ( input === undefined )
-		return "undefined";
-	if ( input === null )
-		return "null";
-	if ( input === true )
-		return "true";
-	if ( input === false )
-		return "false";
-	if ( Object.prototype.toString.call( input ) === "[object Number]" )
-		return Math.round( ( input + 0.00001 ) * 100 ) / 100; // return to 2 decimal places
-
-	return ( input + "" ); // force stringify
-}
-
 function dispatchDeviceOrientationEvent( values ) {
 	var data = values || {};
 
@@ -21,7 +6,7 @@ function dispatchDeviceOrientationEvent( values ) {
 	var event = document.createEvent( 'Event' );
 	event.initEvent( 'deviceorientation', true, true );
 
-	if (data.alpha >= 360) data.alpha %= 360;
+	if ( data.alpha >= 360 ) data.alpha %= 360;
 
 	var eventData = {
 		'alpha': data.alpha || 0,

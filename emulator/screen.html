@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+
+<script type="text/javascript" src="js/utils.js"></script>
+
+<style>
+	* {
+		margin: 0;
+		padding: 0;
+	}
+
+	html,
+	body {
+		width: 100%;
+		height: 100%;
+	}
+
+	#screenFrame {
+		width: 100%;
+		max-width: 640px;
+		height: 100%;
+		max-height: 640px;
+	}
+
+	#screenFrameWrapper {
+		display: block;
+		position: relative;
+		height: 100%;
+		width: 100%;
+	}
+</style>
+
+<div id="screenFrameWrapper">
+	<iframe id="screenFrame" class="relative" style="z-index:1;" src="" frameborder="0"></iframe>
+</div>
+
+<script>
+window.addEventListener( 'load', function() {
+
+  var selfUrl = new URL( window.location );
+  var targetUrl;
+
+  var urlParam = getParameterByName( 'url' );
+
+  var screenFrame = document.querySelector( 'iframe#screenFrame' );
+
+  if ( urlParam.length > 0 ) {
+    if ( urlParam.substr( 0, 4 ) != 'http' ) {
+      urlParam = 'http://' + urlParam;
+    }
+    targetUrl = new URL( urlParam );
+    // Load url in iframe
+    screenFrame.src = urlParam;
+  }
+
+  var actions = {
+    'deviceorientation': function( data ) {
+
+      // Propagate on to target page
+      screenFrame.contentWindow.postMessage( JSON.stringify( {
+        'action': 'deviceorientation',
+        'data': data
+      } ), targetUrl.origin );
+
+    },
+    'screenOrientationChange': function( data ) {
+
+      // Propagate on to target page
+      screenFrame.contentWindow.postMessage( JSON.stringify( {
+        'action': 'screenOrientationChange',
+        'data': data
+      } ), targetUrl.origin );
+
+      // Force fire a resize on to target page when changing screen orientation
+      screenFrame.contentWindow.postMessage( JSON.stringify( {
+        'action': 'resize',
+        'data': data
+      } ), targetUrl.origin );
+
+    },
+    'updateScreenDimensions': function( data ) {
+
+      // Update renderer dimensions
+      screenFrame.style.maxWidth = data.newWidth;
+      screenFrame.style.maxHeight = data.newHeight;
+
+      // Resize event will be triggered in screenFrame automatically so no need to fire it here
+
+    },
+    'lockScreenOrientation': function( data ) {
+      // Send up to parent emulator page
+      if (!window.parent) return;
+
+      window.parent.postMessage(JSON.stringify( {
+        'action': 'lockScreenOrientation',
+        'data': data
+      } ), '*');
+    },
+    'unlockScreenOrientation': function( data ) {
+      // Send up to parent emulator page
+      if (!window.parent) return;
+
+      window.parent.postMessage(JSON.stringify( {
+        'action': 'unlockScreenOrientation'
+      } ), '*');
+    }
+  };
+
+  // Listen for proxied messages
+  window.addEventListener( 'message', function( event ) {
+
+    if ( event.origin !== selfUrl.origin && event.origin !== targetUrl.origin ) return;
+
+    var json = JSON.parse( event.data );
+
+    if ( !json.action || !actions[ json.action ] ) return;
+
+    actions[ json.action ]( json.data );
+
+  }, false );
+
+}, false );
+</script>

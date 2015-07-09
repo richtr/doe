@@ -32,12 +32,26 @@
 			<li>
 				<button class="charcoal hide-on-small-tablet hide-on-mobile" data-device="ipad" title="iPad" data-rotate="true" data-viewport-width="768px" data-viewport-height="1024px" data-user-agent="Mozilla/5.0 (iPad; CPU OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A5376e Safari/8536.25"><i class="icon-tablet"></i></button>
 			</li>
-			<!--<li><button class="charcoal rotate" data-rotate="true" title="Toggle Landscape/Portrait"><i class="icon-rotate-left"></i></button></li>-->
+			<li>
+				<div class="info" title="Current Device Orientation Data (in degrees)">
+					a: <span id="orientationAlpha">-</span>
+					b: <span id="orientationBeta">-</span>
+					g: <span id="orientationGamma">-</span>
+				</div>
+			</li>
+			<li>
+				<div class="info" style="margin: 0; padding-right: 10px" title="Current Screen Orientation Angle (in degrees)">
+					s: <span id="screenOrientation" style="width: 20px;">0</span>
+				</div>
+			</li>
+			<li>
+				<button class="charcoal rotate" data-rotate="true" title="Rotate the Screen"><i class="icon-rotate-left"></i></button>
+			</li>
 		</ul>
 	</div>
 
-	<div id="emulatorFrameWrapper">
-		<iframe id="emulatorFrame" class="relative" style="z-index:1;" src="" frameborder="0"></iframe>
+	<div id="deviceFrameWrapper">
+		<iframe id="deviceFrame" class="relative" style="z-index:1;" src="" frameborder="0"></iframe>
 	</div>
 
 </body>
