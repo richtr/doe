@@ -109,6 +109,11 @@ window.addEventListener( 'load', function() {
 			}
 		} ), selfUrl.origin );
 
+		// Remove any previous coords from page URL
+		if ( 'replaceState' in history ) {
+			history.replaceState( '', '', '#' );
+		}
+
 	} );
 
 	// Add keyboard shortcuts to switch in-emulator device type
