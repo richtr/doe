@@ -90,66 +90,74 @@ window.addEventListener( 'load', function() {
 
 	var d = {};
 
+	var actions = {
+		'connect': function( data ) {
+
+			var controller = document.querySelector( '#controller' );
+
+			// If any deviceorientation URL params are provided, send them to the controller
+			if ( selfUrl.hash.length > 6 ) {
+				var coords = selfUrl.hash.substring( 1 );
+				try {
+					var coordsObj = JSON.parse( coords );
+
+					if ( coordsObj.length === 3 && ( coordsObj[ 0 ] || coordsObj[ 1 ] || coordsObj[ 2 ] ) ) {
+
+						controller.contentWindow.postMessage( JSON.stringify( {
+							'action': 'setCoords',
+							'data': {
+								'alpha': coordsObj[ 0 ] || 0,
+								'beta': coordsObj[ 1 ] || 0,
+								'gamma': coordsObj[ 2 ] || 0
+							}
+						} ), selfUrl.origin );
+
+					}
+				} catch ( e ) {}
+			}
+
+			// Tell controller to start rendering
+			controller.contentWindow.postMessage( JSON.stringify( {
+				'action': 'start'
+			} ), selfUrl.origin );
+
+		},
+		'newData': function( data ) {
+
+			var roll = data[ 'roll' ] || 0;
+			delete data[ 'roll' ]; // remove roll attribute from json
+
+			// Post deviceorientation data to emulatorFrame window
+			emulatorFrame.contentWindow.postMessage( JSON.stringify( data ), targetUrl.origin );
+
+			// Apply roll compensation to emulatorFrame
+			emulatorFrame.style.webkitTransform = emulatorFrame.style.msTransform = emulatorFrame.style.transform = 'rotate(' + roll + 'deg)';
+
+			// Store latest data so it can be used if/when 'updatePosition' case runs
+			d = data;
+
+		},
+		'updatePosition': function( data ) {
+
+			// replace current page's URL hash (if History API is supported)
+			if ( 'replaceState' in history ) {
+				history.replaceState( '', '', '#[' + d[ 'alpha' ] + ',' + d[ 'beta' ] + ',' + d[ 'gamma' ] + ']' );
+			}
+
+		}
+	}
+
 	// Relay deviceorientation events on to content iframe
 	window.addEventListener( 'message', function( event ) {
+
+		if ( event.origin != selfUrl.origin ) return;
+
 		var json = JSON.parse( event.data );
 
-		switch ( json.action ) {
-			case 'connect':
-				var controller = document.querySelector( '#controller' );
+		if ( !json.action || !actions[ json.action ] ) return;
 
-				// If any deviceorientation URL params are provided, send them to the controller
-				if ( selfUrl.hash.length > 6 ) {
-					var coords = selfUrl.hash.substring( 1 );
-					try {
-						var coordsObj = JSON.parse( coords );
+		actions[ json.action ]( json.data );
 
-						if ( coordsObj.length === 3 && ( coordsObj[ 0 ] || coordsObj[ 1 ] || coordsObj[ 2 ] ) ) {
-
-							controller.contentWindow.postMessage( JSON.stringify( {
-								'action': 'setCoords',
-								'data': {
-									'alpha': coordsObj[ 0 ] || 0,
-									'beta': coordsObj[ 1 ] || 0,
-									'gamma': coordsObj[ 2 ] || 0
-								}
-							} ), selfUrl.origin );
-
-						}
-					} catch ( e ) {}
-				}
-
-				// Tell controller to start rendering
-				controller.contentWindow.postMessage( JSON.stringify( {
-					'action': 'start'
-				} ), selfUrl.origin );
-
-				break;
-
-			case 'newData':
-				var roll = json.data[ 'roll' ] || 0;
-				delete json.data[ 'roll' ]; // remove roll attribute from json
-
-				// Post deviceorientation data to emulatorFrame window
-				emulatorFrame.contentWindow.postMessage( JSON.stringify( json.data ), targetUrl.origin );
-
-				// Apply roll compensation to emulatorFrame
-				emulatorFrame.style.webkitTransform = emulatorFrame.style.msTransform = emulatorFrame.style.transform = 'rotate(' + roll + 'deg)';
-
-				// Store latest data so it can be used if/when 'updatePosition' case runs
-				d = json.data;
-
-				break;
-
-			case 'updatePosition':
-				// replace current page's URL hash (if History API is supported)
-				if ( 'replaceState' in history ) {
-					history.replaceState( '', '', '#[' + d[ 'alpha' ] + ',' + d[ 'beta' ] + ',' + d[ 'gamma' ] + ']' );
-				}
-
-				break;
-		}
 	}, false );
-
 
 }, false );
