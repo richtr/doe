@@ -44,10 +44,14 @@ window.addEventListener( 'load', function() {
 
 		}, false );
 
-		var controls = player.getControls();
-
-		var euler = new THREE.Euler();
-		var worldQuat = new THREE.Quaternion( -Math.sqrt( 0.5 ), 0, 0, Math.sqrt( 0.5 ) );
+		var actions = {
+			'start': function( data ) {
+				player.play(); // Go!!!
+			},
+			'setCoords': function( data ) {
+				player.setManualOrientation( data.alpha, data.beta, data.gamma );
+			}
+		};
 
 		// Receive messages from window.parent
 		window.addEventListener( 'message', function( event ) {
@@ -56,33 +60,10 @@ window.addEventListener( 'load', function() {
 
 			var json = JSON.parse( event.data );
 
-			switch ( json.action ) {
-				case 'start':
-					player.play(); // Go!!!
+			if ( !json.action || !actions[ json.action ] ) return;
 
-					break;
-				case 'setCoords':
-					var _x = THREE.Math.degToRad( json.data[ 'beta' ] || 0 );
-					var _y = THREE.Math.degToRad( json.data[ 'alpha' ] || 0 );
-					var _z = THREE.Math.degToRad( json.data[ 'gamma' ] || 0 );
+			actions[ json.action ]( json.data );
 
-					euler.set( _x, _y, -_z, 'YXZ' );
-
-					// Apply provided deviceorientation values to controller
-					controls.object.quaternion.setFromEuler( euler );
-					controls.object.quaternion.multiply( worldQuat );
-
-					break;
-			}
-		}, false );
-
-		controls.addEventListener( 'userinteractionend', function() {
-			// Tell parent to update URL hash
-			if ( window.parent ) {
-				window.parent.postMessage( JSON.stringify( {
-					'action': 'updatePosition'
-				} ), '*' );
-			}
 		}, false );
 
 		// Kick off the controller by telling its parent window that it is now ready

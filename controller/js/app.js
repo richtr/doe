@@ -16,6 +16,18 @@ var APP = {
 		this.width = 500;
 		this.height = 500;
 
+		var prevTime, request;
+
+		var euler = new THREE.Euler();
+		var deviceOrientation = new FULLTILT.Euler();
+
+		var worldQuat = new THREE.Quaternion( -Math.sqrt( 0.5 ), 0, 0, Math.sqrt( 0.5 ) );
+
+		var camQuat = new THREE.Quaternion();
+
+		var rotation = new THREE.Euler( 0, 0, 0, 'YXZ' );
+		var rotQuat = new THREE.Quaternion();
+
 		this.load = function( json ) {
 
 			renderer = new THREE.WebGLRenderer( {
@@ -71,6 +83,15 @@ var APP = {
 			controls.enableManualZoom = false;
 			controls.connect();
 
+			// Tell parent window to update its URL hash whenever interfaction with controls ends
+			controls.addEventListener( 'userinteractionend', function() {
+				if ( window.parent ) {
+					window.parent.postMessage( JSON.stringify( {
+						'action': 'updatePosition'
+					} ), '*' );
+				}
+			}, false );
+
 		};
 
 		this.setCamera = function( value ) {
@@ -101,6 +122,20 @@ var APP = {
 
 		};
 
+		this.setManualOrientation = function( alpha, beta, gamma ) {
+
+			var _x = THREE.Math.degToRad( beta || 0 );
+			var _y = THREE.Math.degToRad( alpha || 0 );
+			var _z = THREE.Math.degToRad( gamma || 0 );
+
+			euler.set( _x, _y, -_z, 'YXZ' );
+
+			// Apply provided deviceorientation values to controller
+			controls.object.quaternion.setFromEuler( euler );
+			controls.object.quaternion.multiply( worldQuat );
+
+		}
+
 		this.getControls = function() {
 
 			return controls;
@@ -116,16 +151,6 @@ var APP = {
 			}
 
 		};
-
-		var prevTime, request;
-
-		var fulltiltEuler = new FULLTILT.Euler();
-
-		var worldQuat = new THREE.Quaternion( -Math.sqrt( 0.5 ), 0, 0, Math.sqrt( 0.5 ) );
-		var camQuat = new THREE.Quaternion();
-		var rotQuat = new THREE.Quaternion();
-
-		var rotation = new THREE.Euler( 0, 0, 0, 'YXZ' );
 
 		var animate = function( time ) {
 
@@ -145,14 +170,14 @@ var APP = {
 			camQuat.inverse();
 
 			// Derive Tait-Bryan angles from calculated device orientation quaternion
-			fulltiltEuler.setFromQuaternion( camQuat );
+			deviceOrientation.setFromQuaternion( camQuat );
 
 			// Calculate required emulator screen roll compensation required
 			var rollZ = rotation.setFromQuaternion( controls.object.quaternion, 'YXZ' ).z;
-			fulltiltEuler.roll = THREE.Math.radToDeg( -rollZ );
+			deviceOrientation.roll = THREE.Math.radToDeg( -rollZ );
 
 			// Dispatch a new 'deviceorientation' event based on derived device orientation
-			dispatchDeviceOrientationEvent( fulltiltEuler );
+			dispatchDeviceOrientationEvent( deviceOrientation );
 
 			// Render the controller
 			renderer.render( scene, camera );
