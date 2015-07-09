@@ -98,6 +98,19 @@ window.addEventListener( 'load', function() {
 		deviceScaleValue.text( scaleFactor + "x" );
 	} );
 
+	$( 'button.reset' ).on( 'click', function( e ) {
+
+		controller.contentWindow.postMessage( JSON.stringify( {
+			'action': 'setCoords',
+			'data': {
+				'alpha': 0,
+				'beta': 90,
+				'gamma': 0
+			}
+		} ), selfUrl.origin );
+
+	} );
+
 	// Add keyboard shortcuts to switch in-emulator device type
 	$( document ).on( 'keyup', function( e ) {
 		switch ( e.keyCode ) {
