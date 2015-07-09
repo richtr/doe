@@ -258,7 +258,6 @@
 
 	// Inject Screen Orientation API shim ASAP when running in emulator
 	var parentUrl = new URL( document.referrer );
-	console.log(document.referrer == "", window.parent == window, parentUrl.origin !== emulatorUrl.origin);
 	if ( document.referrer == "" || window.parent == window || parentUrl.origin !== emulatorUrl.origin ) {
 
 		// Check if device orientation events are supported.
