@@ -22,16 +22,19 @@ window.addEventListener( 'load', function() {
 
 			if ( !window.parent ) return;
 
-			window.parent.postMessage( JSON.stringify( {
-				'action': 'newData',
-				'data': {
-					'alpha': event.alpha,
-					'beta': event.beta,
-					'gamma': event.gamma,
-					'absolute': event.absolute,
-					'roll': event.roll
+			sendMessage(
+				window.parent,
+				{
+					'action': 'newData',
+					'data': {
+						'alpha': event.alpha,
+						'beta': event.beta,
+						'gamma': event.gamma,
+						'absolute': event.absolute,
+						'roll': event.roll
+					}
 				}
-			} ), '*' );
+			);
 
 		}, false );
 
@@ -46,9 +49,12 @@ window.addEventListener( 'load', function() {
 				player.updateScreenOrientation( data );
 
 				if ( window.parent ) {
-					window.parent.postMessage( JSON.stringify( {
-						'action': 'updatePosition'
-					} ), '*' );
+					sendMessage(
+						window.parent,
+						{
+							'action': 'updatePosition'
+						}
+					);
 				}
 			}
 		};
@@ -68,9 +74,13 @@ window.addEventListener( 'load', function() {
 
 		// Kick off the controller by telling its parent window that it is now ready
 		if ( window.parent ) {
-			window.parent.postMessage( JSON.stringify( {
-				'action': 'connect'
-			} ), '*' );
+
+			sendMessage(
+				window.parent,
+				{
+					'action': 'connect'
+				}
+			);
 		}
 
 	} );

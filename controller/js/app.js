@@ -86,9 +86,14 @@ var APP = {
 			// Tell parent window to update its URL hash whenever interfaction with controls ends
 			controls.addEventListener( 'userinteractionend', function() {
 				if ( window.parent ) {
-					window.parent.postMessage( JSON.stringify( {
-						'action': 'updatePosition'
-					} ), '*' );
+
+					sendMessage(
+						window.parent,
+						{
+							'action': 'updatePosition'
+						}
+					);
+					
 				}
 			}, false );
 

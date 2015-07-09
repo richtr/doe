@@ -21,3 +21,7 @@ function dispatchDeviceOrientationEvent( values ) {
 
 	window.dispatchEvent( event );
 }
+
+function sendMessage(target, json, origin) {
+	target['postMessage'](JSON.stringify(json), origin || '*');
+}

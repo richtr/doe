@@ -52,13 +52,18 @@ function startEmulator() {
 		}
 
 		// Relay new dimensions on to deviceFrame
-		deviceFrame.contentWindow.postMessage( JSON.stringify( {
-			'action': 'updateScreenDimensions',
-			'data': {
-				'newWidth': newDimension + "px",
-				'newHeight': newDimension + "px"
-			}
-		} ), selfUrl.origin );
+		sendMessage(
+			deviceFrame.contentWindow,
+			{
+				'action': 'updateScreenDimensions',
+				'data': {
+					'newWidth': newDimension + "px",
+					'newHeight': newDimension + "px"
+				}
+			},
+			selfUrl.origin
+		);
+
 		return false;
 	} );
 
@@ -95,14 +100,18 @@ function startEmulator() {
 
 	$( 'button.reset' ).on( 'click', function( e ) {
 
-		controller.contentWindow.postMessage( JSON.stringify( {
-			'action': 'setCoords',
-			'data': {
-				'alpha': 0,
-				'beta': 90,
-				'gamma': 0
-			}
-		} ), selfUrl.origin );
+		sendMessage(
+			controller.contentWindow,
+			{
+				'action': 'setCoords',
+				'data': {
+					'alpha': 0,
+					'beta': 90,
+					'gamma': 0
+				}
+			},
+			selfUrl.origin
+		);
 
 		// Remove any previous coords from page URL
 		if ( 'replaceState' in history ) {
@@ -137,20 +146,28 @@ function startEmulator() {
 	function updateScreenOrientation( deltaAngle, updateControls ) {
 
 		// Update controller rendering
-		controller.contentWindow.postMessage( JSON.stringify( {
-			'action': 'rotateScreen',
-			'data': {
-				'value': deltaAngle,
-				'totalRotation': currentScreenOrientation,
-				'updateControls': updateControls
-			}
-		} ), selfUrl.origin );
+		sendMessage(
+			controller.contentWindow,
+			{
+				'action': 'rotateScreen',
+				'data': {
+					'value': deltaAngle,
+					'totalRotation': currentScreenOrientation,
+					'updateControls': updateControls
+				}
+			},
+			selfUrl.origin
+		);
 
 		// Notify emulated page that screen orientation has changed
-		deviceFrame.contentWindow.postMessage( JSON.stringify( {
-			'action': 'screenOrientationChange',
-			'data': 360 - currentScreenOrientation
-		} ), selfUrl.origin );
+		sendMessage(
+			deviceFrame.contentWindow,
+			{
+				'action': 'screenOrientationChange',
+				'data': 360 - currentScreenOrientation
+			},
+			selfUrl.origin
+		);
 
 	}
 
@@ -171,14 +188,18 @@ function startEmulator() {
 
 					if ( (coordsObj.length === 3 || coordsObj.length === 4) && ( coordsObj[ 0 ] || coordsObj[ 1 ] || coordsObj[ 2 ] ) ) {
 
-						controller.contentWindow.postMessage( JSON.stringify( {
-							'action': 'setCoords',
-							'data': {
-								'alpha': coordsObj[ 0 ] || 0,
-								'beta': coordsObj[ 1 ] || 0,
-								'gamma': coordsObj[ 2 ] || 0
-							}
-						} ), selfUrl.origin );
+						sendMessage(
+							controller.contentWindow,
+							{
+								'action': 'setCoords',
+								'data': {
+									'alpha': coordsObj[ 0 ] || 0,
+									'beta': coordsObj[ 1 ] || 0,
+									'gamma': coordsObj[ 2 ] || 0
+								}
+							},
+							selfUrl.origin
+						);
 
 						// Use 4th parameter to set the screen orientation
 						if(coordsObj[ 3 ]) {
@@ -217,9 +238,13 @@ function startEmulator() {
 			}
 
 			// Tell controller to start rendering
-			controller.contentWindow.postMessage( JSON.stringify( {
-				'action': 'start'
-			} ), selfUrl.origin );
+			sendMessage(
+				controller.contentWindow,
+				{
+					'action': 'start'
+				},
+				selfUrl.origin
+			);
 
 		},
 		'newData': function( data ) {
@@ -233,10 +258,14 @@ function startEmulator() {
 			delete data[ 'roll' ]; // remove roll attribute from json
 
 			// Post deviceorientation data to deviceFrame window
-			deviceFrame.contentWindow.postMessage( JSON.stringify( {
-				'action': 'deviceorientation',
-				'data': data
-			} ), selfUrl.origin );
+			sendMessage(
+				deviceFrame.contentWindow,
+				{
+					'action': 'deviceorientation',
+					'data': data
+				},
+				selfUrl.origin
+			);
 
 			// Apply roll compensation to deviceFrame
 			deviceFrame.style.webkitTransform = deviceFrame.style.msTransform = deviceFrame.style.transform = 'rotate(' + ( roll - currentScreenOrientation ) + 'deg) scale(' + scaleFactor + ')';
