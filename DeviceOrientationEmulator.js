@@ -85,6 +85,8 @@
 		},
 		'screenOrientationChange': function( data ) {
 
+			data %= 360;
+
 			// Update window.orientation
 			window.orientation = data;
 
@@ -134,6 +136,7 @@
 		// Aliases
 		'-90': 'landscape-secondary',
 		'-180': 'portrait-secondary',
+		'360': 'portrait-primary',
 	};
 	var typeToAngle = {
 		'portrait-primary': 0,
