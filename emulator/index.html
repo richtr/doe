@@ -21,27 +21,41 @@
 	<div id="emulator" class="bounceInDown animated" style="z-index:2;">
 		<ul class="button-group">
 			<li>
+				<div class="info" style="padding-top: 2px; margin-right: 0; padding-right: 10px" title="Scale">
+					<input id="deviceScaling" type="range" min="0.4" max="1" step="0.1" value="1">
+				</div>
+			</li>
+			<li>
+				<div class="info" style="margin-left: 1px; padding:8px 0;" title="Current Screen Viewport Scale">
+					<span id="deviceScaleValue" style="width:60px; padding: 0 10px;">1x</span>
+				</div>
+			</li>
+			<li>
 				<button class="asphalt active" title="iPhone" data-rotate="true" data-device="iphone" data-viewport-width="320px" data-viewport-height="640px" data-user-agent="Mozilla/5.0 (iPhone; CPU iPhone OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A5376e Safari/8536.25"><i class="icon-mobile-phone"></i></button>
 			</li>
 			<li>
 				<button class="charcoal" title="Android Phone" data-rotate="true" data-device="android" data-viewport-width="480px" data-viewport-height="720px" data-user-agent="Mozilla/5.0 (Linux; U; Android 2.3.6; en-us; Nexus S Build/GRK39F) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile Safari/533.1"><i class="android icon-mobile-phone"></i></button>
 			</li>
 			<li>
-				<button class="charcoal hide-on-mobile" title="Android Tablet" data-device="tablet" data-rotate="true" data-viewport-width="720px" data-viewport-height="1280px" data-user-agent="Mozilla/5.0 (Linux; U; Android 4.0.2; en-us; Galaxy Nexus Build/ICL53F) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30"><i class="android icon-tablet"></i></button>
+				<button class="charcoal" title="Android Tablet" data-device="tablet" data-rotate="true" data-viewport-width="720px" data-viewport-height="1280px" data-user-agent="Mozilla/5.0 (Linux; U; Android 4.0.2; en-us; Galaxy Nexus Build/ICL53F) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30"><i class="android icon-tablet"></i></button>
 			</li>
 			<li>
-				<button class="charcoal hide-on-small-tablet hide-on-mobile" data-device="ipad" title="iPad" data-rotate="true" data-viewport-width="768px" data-viewport-height="1024px" data-user-agent="Mozilla/5.0 (iPad; CPU OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A5376e Safari/8536.25"><i class="icon-tablet"></i></button>
+				<button class="charcoal" title="iPad" data-device="ipad" data-rotate="true" data-viewport-width="768px" data-viewport-height="1024px" data-user-agent="Mozilla/5.0 (iPad; CPU OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A5376e Safari/8536.25"><i class="icon-tablet"></i></button>
 			</li>
 			<li>
 				<div class="info" title="Current Device Orientation Data (in degrees)">
-					a: <span id="orientationAlpha">-</span>
-					b: <span id="orientationBeta">-</span>
-					g: <span id="orientationGamma">-</span>
+					a:
+					<span id="orientationAlpha">-</span>
+					b:
+					<span id="orientationBeta">-</span>
+					g:
+					<span id="orientationGamma">-</span>
 				</div>
 			</li>
 			<li>
 				<div class="info" style="margin: 0; padding-right: 10px" title="Current Screen Orientation Angle (in degrees)">
-					s: <span id="screenOrientation" style="width: 20px;">0</span>
+					s:
+					<span id="screenOrientation" style="width: 20px;">0</span>
 				</div>
 			</li>
 			<li>

@@ -6,6 +6,8 @@ window.addEventListener( 'load', function() {
 
 	var deviceFrame = document.querySelector( 'iframe#deviceFrame' );
 
+	var scaleFactor = 1;
+
 	// Load target in screen iframe
 	deviceFrame.src = "screen.html" + location.search;
 
@@ -23,25 +25,28 @@ window.addEventListener( 'load', function() {
 		$( 'button[data-viewport-width]' ).removeClass( 'asphalt active' ).addClass( 'charcoal' );
 		$( this ).addClass( 'asphalt active' ).removeClass( 'charcoal' );
 		$( '#deviceFrame' ).css( {
-			'max-width': newWidth,
-			'max-height': newHeight
+			'min-width': newWidth,
+			'min-height': newHeight
 		} );
 		e.preventDefault();
 
-		var newDimension;
+		var w = parseInt( newWidth, 10 );
+		var h = parseInt( newHeight, 10 );
+		var newDimension = 0;
+
 		// Take the larger of the two values
-		if ( parseInt( newWidth, 10 ) >= parseInt( newHeight, 10 ) ) {
-			newDimension = newWidth;
+		if ( w >= h ) {
+			newDimension = w;
 		} else {
-			newDimension = newHeight;
+			newDimension = h;
 		}
 
 		// Relay new dimensions on to deviceFrame
 		deviceFrame.contentWindow.postMessage( JSON.stringify( {
 			'action': 'updateScreenDimensions',
 			'data': {
-				'newWidth': newDimension,
-				'newHeight': newDimension
+				'newWidth': newDimension + "px",
+				'newHeight': newDimension + "px"
 			}
 		} ), selfUrl.origin );
 		return false;
@@ -84,6 +89,13 @@ window.addEventListener( 'load', function() {
 
 		screenOrientationEl.textContent = angle
 
+	} );
+
+	var deviceScaleValue = $( '#deviceScaleValue' );
+
+	$( '#deviceScaling' ).on( 'input', function( e ) {
+		scaleFactor = e.target.value;
+		deviceScaleValue.text( scaleFactor + "x" );
 	} );
 
 	// Add keyboard shortcuts to switch in-emulator device type
@@ -164,7 +176,7 @@ window.addEventListener( 'load', function() {
 			} ), selfUrl.origin );
 
 			// Apply roll compensation to deviceFrame
-			deviceFrame.style.webkitTransform = deviceFrame.style.msTransform = deviceFrame.style.transform = 'rotate(' + ( roll - currentScreenOrientation ) + 'deg)';
+			deviceFrame.style.webkitTransform = deviceFrame.style.msTransform = deviceFrame.style.transform = 'rotate(' + ( roll - currentScreenOrientation ) + 'deg) scale(' + scaleFactor + ')';
 
 			// Store latest data so it can be used if/when 'updatePosition' case runs
 			d = data;
