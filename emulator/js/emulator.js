@@ -1,15 +1,25 @@
-window.addEventListener( 'load', function() {
+function startEmulator() {
 
 	var selfUrl = new URL( window.location );
 
-	var controller = document.querySelector( '#controller' );
+	var controller = document.querySelector( 'iframe#controller' );
+	var emulatorMenu = document.querySelector( '#emulator' );
 
 	var deviceFrame = document.querySelector( 'iframe#deviceFrame' );
 
-	var scaleFactor = 1;
+	controller.onload = function() {
+		controller.style.display = 'block';
+		emulatorMenu.style.display = 'block';
+	}
+	controller.src = '../controller/index.html';
 
+	deviceFrame.onload = function() {
+		deviceFrame.style.display = 'block';
+	}
 	// Load target in screen iframe
 	deviceFrame.src = "screen.html" + location.search;
+
+	var scaleFactor = 1;
 
 	$( 'body' ).on( 'click', 'button[data-viewport-width]', function( e ) {
 		if ( $( this ).attr( 'data-viewport-width' ) == '100%' ) {
@@ -257,4 +267,4 @@ window.addEventListener( 'load', function() {
 
 	}, false );
 
-}, false );
+}
