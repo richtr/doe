@@ -60,16 +60,16 @@ window.addEventListener( 'load', function() {
 	// Add keyboard shortcuts to switch in-emulator device type
 	$( document ).on( 'keyup', function( e ) {
 		switch ( e.keyCode ) {
-			case 46:
+			case 49:
 				$( '[data-device="iphone"]' ).trigger( 'click' );
 				break;
-			case 47:
+			case 50:
 				$( '[data-device="android"]' ).trigger( 'click' );
 				break;
-			case 48:
+			case 51:
 				$( '[data-device="tablet"]' ).trigger( 'click' );
 				break;
-			case 49:
+			case 52:
 				$( '[data-device="ipad"]' ).trigger( 'click' );
 				break;
 			case 32:
