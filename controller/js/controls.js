@@ -12,8 +12,6 @@ window.addEventListener( 'load', function() {
 
 		document.body.appendChild( player.dom );
 
-
-
 		window.addEventListener( 'resize', function() {
 			player.setSize( window.innerWidth, window.innerHeight );
 		} );
@@ -25,6 +23,12 @@ window.addEventListener( 'load', function() {
 		// Listen for device orientation events fired from the emulator
 		// and dispatch them on to the parent window
 		window.addEventListener( 'deviceorientation', function( event ) {
+
+			// Print deviceorientation data values in GUI
+			orientationAlpha.value = printDataValue( event.alpha );
+			orientationBeta.value = printDataValue( event.beta );
+			orientationGamma.value = printDataValue( event.gamma );
+
 			if ( !window.parent ) return;
 
 			window.parent.postMessage( JSON.stringify( {
@@ -38,10 +42,6 @@ window.addEventListener( 'load', function() {
 				}
 			} ), '*' );
 
-			// Print deviceorientation data values in GUI
-			orientationAlpha.value = printDataValue( event.alpha );
-			orientationBeta.value = printDataValue( event.beta );
-			orientationGamma.value = printDataValue( event.gamma );
 		}, false );
 
 		var controls = player.getControls();
