@@ -70,12 +70,6 @@ window.addEventListener( 'load', function() {
         'data': data
       } ), targetUrl.origin );
 
-      // Force fire a resize on to target page when changing screen orientation
-      screenFrame.contentWindow.postMessage( JSON.stringify( {
-        'action': 'resize',
-        'data': data
-      } ), targetUrl.origin );
-
     },
     'updateScreenDimensions': function( data ) {
 
