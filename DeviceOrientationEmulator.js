@@ -124,17 +124,6 @@
 
 	}
 
-	// Listen for proxied device orientation events
-	runEmulation();
-
-	// Check if device orientation events are supported.
-	// If not, show the emulator alert message.
-	if ( document.readyState === 'complete' ) {
-		runDetection();
-	} else {
-		window.addEventListener( 'load', runDetection, false );
-	}
-
 	// *** START Screen Orientation API emulator
 
 	var angleToType = {
@@ -268,13 +257,25 @@
 	}
 
 	// Inject Screen Orientation API shim ASAP when running in emulator
-	if ( window.parent && window.parent !== window ) {
+	var parentUrl = new URL( document.referrer );
+	console.log(document.referrer == "", window.parent == window, parentUrl.origin !== emulatorUrl.origin);
+	if ( document.referrer == "" || window.parent == window || parentUrl.origin !== emulatorUrl.origin ) {
 
-		var parentUrl = new URL( document.referrer );
-
-		if ( parentUrl.origin == emulatorUrl.origin ) {
-			overrideScreenOrientationAPI();
+		// Check if device orientation events are supported.
+		// If not, show the emulator alert message.
+		if ( document.readyState === 'complete' ) {
+			runDetection();
+		} else {
+			window.addEventListener( 'load', runDetection, false );
 		}
+
+	} else {
+
+		// Make sure the screen orientation API is set up
+		overrideScreenOrientationAPI();
+
+		// Listen for proxied device orientation events
+		runEmulation();
 
 	}
 
