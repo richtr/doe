@@ -12,6 +12,10 @@ In any web browser that does not support device orientation (e.g. Desktop browse
 
 [https://richtr.github.io/Full-Tilt/examples/vr_interactive.html](https://richtr.github.io/Full-Tilt/examples/vr_interactive.html)
 
+This emulator also supports the [Screen Orientation API](http://www.w3.org/TR/screen-orientation/). If your browser does not support the Screen Orientation API then you can open the following page:
+
+[https://people.opera.com/richt/release/tests/doe/screenorientation.html](https://people.opera.com/richt/release/tests/doe/screenorientation.html)
+
 If your browser does not support Device Orientation Events then you will be asked if you want to load these pages in this emulator.
 
 That's it!
