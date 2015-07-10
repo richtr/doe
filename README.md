@@ -1,6 +1,8 @@
-# doe
+# Doe
 
-##### The Device Orientation API and Screen Orientation API Emulator for developing and debugging sensor-related web apps.
+### The Device Orientation Emulator
+
+##### Doe is a highly capable device and screen orientation emulator for developing and debugging sensor-related web apps on desktop computers
 
 Doe is a simple and precise device orientation and screen orientation API emulator for web browsers that do not provide native sensor support.
 
