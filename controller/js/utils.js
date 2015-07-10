@@ -9,9 +9,9 @@ function dispatchDeviceOrientationEvent( values ) {
 	if ( data.alpha >= 360 ) data.alpha %= 360;
 
 	var eventData = {
-		'alpha': data.alpha || 0,
-		'beta': data.beta || 90,
-		'gamma': data.gamma || 0,
+		'alpha': data.alpha,
+		'beta': data.beta,
+		'gamma': data.gamma,
 		'absolute': true,
 		'roll': data.roll || 0 // custom attribute for emulator roll adjustment
 	};
@@ -22,6 +22,6 @@ function dispatchDeviceOrientationEvent( values ) {
 	window.dispatchEvent( event );
 }
 
-function sendMessage(target, json, origin) {
-	target['postMessage'](JSON.stringify(json), origin || '*');
+function sendMessage( target, json, origin ) {
+	target[ 'postMessage' ]( JSON.stringify( json ), origin || '*' );
 }

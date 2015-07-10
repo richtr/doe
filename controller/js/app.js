@@ -88,12 +88,11 @@ var APP = {
 				if ( window.parent ) {
 
 					sendMessage(
-						window.parent,
-						{
+						window.parent, {
 							'action': 'updatePosition'
 						}
 					);
-					
+
 				}
 			}, false );
 
@@ -143,6 +142,8 @@ var APP = {
 
 		this.updateScreenOrientation = function( data ) {
 
+			// Update the screen display bars
+
 			var screenTop = scene.getObjectByProperty( 'name', 'screen_top', true );
 			var screenBottom = scene.getObjectByProperty( 'name', 'screen_bottom', true );
 			var screenTopInv = scene.getObjectByProperty( 'name', 'screen_top_inverse', true );
@@ -153,7 +154,7 @@ var APP = {
 			var screenLeftInv = scene.getObjectByProperty( 'name', 'screen_left_inverse', true );
 			var screenRightInv = scene.getObjectByProperty( 'name', 'screen_right_inverse', true );
 
-			if ( data.totalRotation % 180 !== 0 ) {
+				if ( data.totalRotation % 180 !== 0 ) {
 
 				screenTop.visible = false;
 				screenBottom.visible = false;
@@ -201,8 +202,10 @@ var APP = {
 
 			}
 
-			if (data.updateControls) {
-				controls.updateScreenOrientation( THREE.Math.degToRad( data.value ) );
+			if ( data.updateControls ) {
+
+				controls.updateScreenOrientation( data.rotationDiff );
+
 			}
 
 		}

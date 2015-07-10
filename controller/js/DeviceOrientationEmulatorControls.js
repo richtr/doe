@@ -274,12 +274,12 @@ var DeviceOrientationEmulatorControls = function( object, domElement ) {
 		}
 	};
 
-	this.updateScreenOrientation = function(radians) {
+	this.updateScreenOrientation = function( diffRotation ) {
 		var screenTransform = new THREE.Quaternion();
 		var minusHalfAngle = 0;
 
-		// Apply screen rotation
-		minusHalfAngle = -radians / 2;
+		// Add new screen rotation
+		minusHalfAngle = -( THREE.Math.degToRad( diffRotation ) ) / 2;
 		screenTransform.set( 0, 0, Math.sin( minusHalfAngle ), Math.cos( minusHalfAngle ) );
 		this.object.quaternion.multiply( screenTransform );
 	};

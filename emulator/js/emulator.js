@@ -16,6 +16,7 @@ function startEmulator() {
 	deviceFrame.onload = function() {
 		deviceFrame.style.display = 'block';
 	}
+
 	// Load target in screen iframe
 	deviceFrame.src = "screen.html" + location.search;
 
@@ -53,8 +54,7 @@ function startEmulator() {
 
 		// Relay new dimensions on to deviceFrame
 		sendMessage(
-			deviceFrame.contentWindow,
-			{
+			deviceFrame.contentWindow, {
 				'action': 'updateScreenDimensions',
 				'data': {
 					'newWidth': newDimension + "px",
@@ -67,27 +67,11 @@ function startEmulator() {
 		return false;
 	} );
 
-	var currentScreenOrientation = 0;
-
 	$( 'body' ).on( 'click', 'button.rotate', function( e ) {
 
-		currentScreenOrientation += 90;
-		currentScreenOrientation %= 360;
+		var currentRotation = currentScreenOrientation == 0 ? 360 : currentScreenOrientation;
 
-		updateScreenOrientation(90, true); // rotate screen clockwise in 90 degree increments
-
-		$( 'button[data-rotate=true]' ).each( function() {
-			//$( this ).toggleClass( 'landscape' );
-			width = $( this ).attr( 'data-viewport-width' );
-			height = $( this ).attr( 'data-viewport-height' );
-			$( this ).attr( 'data-viewport-width', height );
-			$( this ).attr( 'data-viewport-height', width );
-			if ( $( this ).hasClass( 'active' ) ) {
-				$( this ).trigger( 'click' );
-			}
-		} );
-
-		screenOrientationEl.textContent = (360 - currentScreenOrientation) % 360;
+		updateScreenOrientation( currentRotation - 90, true );
 
 	} );
 
@@ -101,8 +85,7 @@ function startEmulator() {
 	$( 'button.reset' ).on( 'click', function( e ) {
 
 		sendMessage(
-			controller.contentWindow,
-			{
+			controller.contentWindow, {
 				'action': 'setCoords',
 				'data': {
 					'alpha': 0,
@@ -138,21 +121,27 @@ function startEmulator() {
 			case 32:
 			case 56:
 			case 82:
-				//$( '.rotate' ).trigger( 'click' );
+				$( '.rotate' ).trigger( 'click' );
 				break;
 		}
 	} );
 
-	function updateScreenOrientation( deltaAngle, updateControls ) {
+	var currentScreenOrientation = 360;
+
+	function updateScreenOrientation( requestedScreenOrientation, updateControls ) {
+
+		// Calculate rotation difference
+		var currentRotation = currentScreenOrientation == 0 ? 360 : currentScreenOrientation;
+
+		var rotationDiff = currentRotation - requestedScreenOrientation;
 
 		// Update controller rendering
 		sendMessage(
-			controller.contentWindow,
-			{
+			controller.contentWindow, {
 				'action': 'rotateScreen',
 				'data': {
-					'value': deltaAngle,
-					'totalRotation': currentScreenOrientation,
+					'rotationDiff': -rotationDiff,
+					'totalRotation': requestedScreenOrientation,
 					'updateControls': updateControls
 				}
 			},
@@ -161,13 +150,31 @@ function startEmulator() {
 
 		// Notify emulated page that screen orientation has changed
 		sendMessage(
-			deviceFrame.contentWindow,
-			{
+			deviceFrame.contentWindow, {
 				'action': 'screenOrientationChange',
-				'data': 360 - currentScreenOrientation
+				'data': 360 - requestedScreenOrientation
 			},
 			selfUrl.origin
 		);
+
+		if ( ( ( currentRotation / 90 ) % 2 ) !== ( ( requestedScreenOrientation / 90 ) % 2 ) ) {
+
+			$( 'button[data-rotate=true]' ).each( function() {
+				width = $( this ).attr( 'data-viewport-width' );
+				height = $( this ).attr( 'data-viewport-height' );
+				$( this ).attr( 'data-viewport-width', height );
+				$( this ).attr( 'data-viewport-height', width );
+				if ( $( this ).hasClass( 'active' ) ) {
+					$( this ).trigger( 'click' );
+				}
+			} );
+
+		}
+
+		screenOrientationEl.textContent = ( 360 - requestedScreenOrientation ) % 360;
+
+		// Update current screen orientation
+		currentScreenOrientation = requestedScreenOrientation;
 
 	}
 
@@ -186,11 +193,10 @@ function startEmulator() {
 				try {
 					var coordsObj = JSON.parse( coords );
 
-					if ( (coordsObj.length === 3 || coordsObj.length === 4) && ( coordsObj[ 0 ] || coordsObj[ 1 ] || coordsObj[ 2 ] ) ) {
+					if ( ( coordsObj.length === 3 || coordsObj.length === 4 ) && ( coordsObj[ 0 ] || coordsObj[ 1 ] || coordsObj[ 2 ] ) ) {
 
 						sendMessage(
-							controller.contentWindow,
-							{
+							controller.contentWindow, {
 								'action': 'setCoords',
 								'data': {
 									'alpha': coordsObj[ 0 ] || 0,
@@ -202,31 +208,13 @@ function startEmulator() {
 						);
 
 						// Use 4th parameter to set the screen orientation
-						if(coordsObj[ 3 ]) {
+						if ( coordsObj[ 3 ] ) {
 							var requestedScreenOrientation = coordsObj[ 3 ] * 1;
-							if(requestedScreenOrientation / 90 > 0 && requestedScreenOrientation / 90 < 4 ) {
-
-								currentScreenOrientation = (360 - requestedScreenOrientation) % 360;
+							if ( requestedScreenOrientation / 90 > 0 && requestedScreenOrientation / 90 < 4 ) {
 
 								deviceFrame.contentWindow.screenFrame.onload = function() {
 
-										updateScreenOrientation(currentScreenOrientation, false);
-
-										if(requestedScreenOrientation % 180) {
-
-											$( 'button[data-rotate=true]' ).each( function() {
-												width = $( this ).attr( 'data-viewport-width' );
-												height = $( this ).attr( 'data-viewport-height' );
-												$( this ).attr( 'data-viewport-width', height );
-												$( this ).attr( 'data-viewport-height', width );
-												if ( $( this ).hasClass( 'active' ) ) {
-													$( this ).trigger( 'click' );
-												}
-											} );
-
-										}
-
-										screenOrientationEl.textContent = requestedScreenOrientation;
+									updateScreenOrientation( ( 360 - requestedScreenOrientation ) % 360, false );
 
 								};
 
@@ -239,8 +227,7 @@ function startEmulator() {
 
 			// Tell controller to start rendering
 			sendMessage(
-				controller.contentWindow,
-				{
+				controller.contentWindow, {
 					'action': 'start'
 				},
 				selfUrl.origin
@@ -259,8 +246,7 @@ function startEmulator() {
 
 			// Post deviceorientation data to deviceFrame window
 			sendMessage(
-				deviceFrame.contentWindow,
-				{
+				deviceFrame.contentWindow, {
 					'action': 'deviceorientation',
 					'data': data
 				},
@@ -273,34 +259,20 @@ function startEmulator() {
 		},
 		'updatePosition': function( data ) {
 
-			window.setTimeout(function() {
+			window.setTimeout( function() {
 				// replace current page's URL hash (if History API is supported)
 				if ( 'replaceState' in history ) {
-					history.replaceState( '', '', '#[' + orientationAlpha.textContent + ',' + orientationBeta.textContent + ',' + orientationGamma.textContent + ',' + (360 - currentScreenOrientation) % 360 + ']' );
+					history.replaceState( '', '', '#[' + orientationAlpha.textContent + ',' + orientationBeta.textContent + ',' + orientationGamma.textContent + ',' + ( ( 360 - currentScreenOrientation ) % 360 ) + ']' );
 				}
-			}, 100);
+			}, 100 );
 
 		},
 		'lockScreenOrientation': function( data ) {
 
+			updateScreenOrientation( ( 360 - data ) % 360, true );
+
 			var btn = $( '.rotate' );
 			var btnIcon = $( 'i', btn );
-
-			var angle = data;
-
-			var currentAngle = ( 360 - currentScreenOrientation ) % 360;
-			if ( currentAngle == 0 ) currentAngle = 360;
-
-			var clickNumber = ( currentAngle / 90 ) - ( angle / 90 );
-			if ( clickNumber < 0 ) clickNumber *= -1;
-
-			btn.prop( "disabled", false );
-
-			if ( clickNumber < 4 ) {
-				for ( var i = 0; i < clickNumber; i++ ) {
-					btn.trigger( 'click' );
-				}
-			}
 
 			btn.prop( "disabled", true ).attr( "title", "Screen Rotation is locked by page" );
 			btnIcon.addClass( 'icon-lock' ).removeClass( 'icon-rotate-left' );

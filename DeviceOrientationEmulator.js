@@ -136,6 +136,7 @@
 		// Aliases
 		'-90': 'landscape-secondary',
 		'-180': 'portrait-secondary',
+		'-270': 'landscape-primary',
 		'360': 'portrait-primary',
 	};
 	var typeToAngle = {
