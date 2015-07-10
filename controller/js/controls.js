@@ -23,8 +23,7 @@ window.addEventListener( 'load', function() {
 			if ( !window.parent ) return;
 
 			sendMessage(
-				window.parent,
-				{
+				window.parent, {
 					'action': 'newData',
 					'data': {
 						'alpha': event.alpha,
@@ -50,8 +49,7 @@ window.addEventListener( 'load', function() {
 
 				if ( window.parent ) {
 					sendMessage(
-						window.parent,
-						{
+						window.parent, {
 							'action': 'updatePosition'
 						}
 					);
@@ -76,8 +74,7 @@ window.addEventListener( 'load', function() {
 		if ( window.parent ) {
 
 			sendMessage(
-				window.parent,
-				{
+				window.parent, {
 					'action': 'connect'
 				}
 			);

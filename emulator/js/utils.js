@@ -20,6 +20,6 @@ function printDataValue( input ) {
 	return ( input + "" ); // force stringify
 }
 
-function sendMessage(target, json, origin) {
-	target['postMessage'](JSON.stringify(json), origin || '*');
+function sendMessage( target, json, origin ) {
+	target[ 'postMessage' ]( JSON.stringify( json ), origin || '*' );
 }
