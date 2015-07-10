@@ -96,10 +96,9 @@ function startEmulator() {
 			selfUrl.origin
 		);
 
-		// Remove any previous coords from page URL
-		if ( 'replaceState' in history ) {
-			history.replaceState( '', '', '#' );
-		}
+		// Remove any previous hash value from page URL
+		selfUrl.hash = '';
+		replaceURL(selfUrl);
 
 	} );
 
@@ -260,10 +259,16 @@ function startEmulator() {
 		'updatePosition': function( data ) {
 
 			window.setTimeout( function() {
-				// replace current page's URL hash (if History API is supported)
-				if ( 'replaceState' in history ) {
-					history.replaceState( '', '', '#[' + orientationAlpha.textContent + ',' + orientationBeta.textContent + ',' + orientationGamma.textContent + ',' + ( ( 360 - currentScreenOrientation ) % 360 ) + ']' );
-				}
+				var hashData = [
+					orientationAlpha.textContent,
+					orientationBeta.textContent,
+					orientationGamma.textContent,
+					( ( 360 - currentScreenOrientation ) % 360 )
+				].join(',');
+
+				selfUrl.hash = '#[' + hashData + ']';
+
+				replaceURL(selfUrl);
 			}, 100 );
 
 		},

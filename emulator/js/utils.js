@@ -23,3 +23,9 @@ function printDataValue( input ) {
 function sendMessage( target, json, origin ) {
 	target[ 'postMessage' ]( JSON.stringify( json ), origin || '*' );
 }
+
+function replaceURL( urlObj ) {
+	if ( 'replaceState' in history ) {
+		history.replaceState( null, null, urlObj.toString() );
+	}
+}
