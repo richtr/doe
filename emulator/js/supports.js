@@ -5,6 +5,9 @@
 	var isFirstEvent = true;
 
 	var starter = window.setTimeout( function() {
+		// Remove this device orientation check
+		window.removeEventListener( 'deviceorientation', check, false );
+
 		if ( document.readyState == 'complete' ) {
 			startEmulator(); // emulator.js
 		} else {
@@ -12,7 +15,7 @@
 		}
 	}, 1000 );
 
-	window.addEventListener( 'deviceorientation', function check() {
+	function check() {
 		// Discard first event (false positive on Chromium Desktop browsers)
 		if ( isFirstEvent ) {
 			isFirstEvent = false;
@@ -27,7 +30,8 @@
 		// Open the original page
 		var pageUrl = getParameterByName( 'url' );
 		window.location = pageUrl || 'https://github.com/richtr/doe';
+	};
 
-	}, false );
+	window.addEventListener( 'deviceorientation', check, false );
 
 } )();
