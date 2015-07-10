@@ -21,7 +21,7 @@ Now whenever this page loads and the current device is not supports it will ask 
 
 #### Using this emulator
 
-Once you have included the JavaScript file [explained above](#Usage) you will be able to load the emulator.
+Once you have included the JavaScript file [explained above](#usage) you will be able to load the emulator.
 
 You should see a screen like this:
 
