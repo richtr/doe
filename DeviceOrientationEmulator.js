@@ -260,7 +260,7 @@
 	}
 
 	// Inject Screen Orientation API shim ASAP when running in emulator
-	var parentUrl = new URL( document.referrer );
+	var parentUrl = new URL( document.referrer || 'http:a' );
 	if ( document.referrer == "" || window.parent == window || parentUrl.origin !== emulatorUrl.origin ) {
 
 		// Check if device orientation events are supported.
