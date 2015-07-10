@@ -6,7 +6,7 @@ Doe is a simple and precise device orientation and screen orientation API emulat
 
 It can be used to build and debug device orientation and screen orientation aware applications without needing to constantly test it on different devices.
 
-If it works in doe then it will work on devices too!
+If it works in doe then it works on devices.
 
 #### Usage
 
@@ -21,23 +21,13 @@ Now whenever this page loads and the current device is not supports it will ask 
 
 #### Using this emulator
 
-Once you have included the JavaScript file [shown above](#Usage) you will be able to load the emulator.
+Once you have included the JavaScript file [explained above](#Usage) you will be able to load the emulator.
 
 You should see a screen like this:
 
 <img src="https://raw.githubusercontent.com/richtr/doe/images/screenshot.png" style="max-width: 100%">
 
-##### Emulator Tools
-
-<img src="https://raw.githubusercontent.com/richtr/doe/images/menubar.png" style="max-width: 100%">
-
-TODO Describe the tools
-
-##### Emulator Controller
-
-<img src="https://raw.githubusercontent.com/richtr/doe/images/controller_rotated_270.png" style="max-width: 300px">
-
-TODO Describe the controller
+Now you can play about with the emulator's tools to change the orientation of the device and the screen.
 
 #### Demo
 
