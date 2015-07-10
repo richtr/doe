@@ -8,6 +8,37 @@ It can be used to build and debug device orientation and screen orientation awar
 
 If it works in doe then it will work on devices too!
 
+#### Usage
+
+Add the Device Orientation Emulator script to any web page you want to allow the emulator to run on when device orientation event support can not be detected:
+
+```html
+<script src="https://richtr.github.io/doe/doe.js"></script>
+```
+That's it!
+
+Now whenever this page loads and the current device is not supports it will ask the user if they want to run it in the emulator :)
+
+#### Using this emulator
+
+Once you have included the JavaScript file [shown above](#Usage) you will be able to load the emulator.
+
+You should see a screen like this:
+
+<img src="https://raw.githubusercontent.com/richtr/doe/images/screenshot.png" style="max-width: 100%">
+
+##### Emulator Tools
+
+<img src="https://raw.githubusercontent.com/richtr/doe/images/menubar.png" style="max-width: 100%">
+
+TODO Describe the tools
+
+##### Emulator Controller
+
+<img src="https://raw.githubusercontent.com/richtr/doe/images/controller_rotated_270.png" style="max-width: 100%">
+
+TODO Describe the controller
+
 #### Demo
 
 In any web browser that does not support device orientation (e.g. Desktop browsers) open one of the following pages:
@@ -23,17 +54,6 @@ This emulator also supports the [Screen Orientation API](http://www.w3.org/TR/sc
 [https://people.opera.com/richt/release/tests/doe/screenorientation.html](https://people.opera.com/richt/release/tests/doe/screenorientation.html)
 
 If your browser does not support Device Orientation Events then you will be asked if you want to load these pages in this emulator.
-
-#### Usage
-
-Add the Device Orientation Emulator script to any web page you want to allow the emulator to run on when device orientation event support can not be detected:
-
-```html
-<script src="https://richtr.github.io/doe/doe.js"></script>
-```
-That's it!
-
-Now whenever this page loads and the current device is not supports it will ask the user if they want to run it in the emulator :)
 
 #### License
 
