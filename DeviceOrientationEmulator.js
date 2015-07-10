@@ -35,11 +35,11 @@
 			swalJSEl.onload = function() {
 				swal( {
 						title: 'No compass detected.',
-						text: 'This page is built for devices that emit device orientation events. If you would still like to try this page you can use an emulator.',
+						text: 'This page is built for browsers that emit hardware sensor events. If you would still like to try this page you can use an emulator.',
 						type: 'error',
 						showCancelButton: true,
 						confirmButtonColor: '#DD6B55',
-						confirmButtonText: 'Open in the emulator',
+						confirmButtonText: 'Open page in emulator',
 						cancelButtonText: 'Cancel',
 						closeOnConfirm: true
 					},
