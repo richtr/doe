@@ -1,11 +1,14 @@
 /**
  *
- * DEVICE ORIENTATION EMULATOR
- * https://github.com/richtr/deviceorientationemulator
+ * doe - The Device and Screen Orientation Emulator
+ * https://github.com/richtr/doe
  *
  * A simple, accurate device orientation emulator for use in web browsers
  * that do not support device orientation events
  * (https://w3c.github.io/deviceorientation/spec-source-orientation.html)
+ *
+ * This emulator also supports Screen Orientation API events
+ * (http://www.w3.org/TR/screen-orientation/)
  *
  * Copyright: 2015 Rich Tibbett
  * License:   MIT
@@ -14,7 +17,7 @@
 
 ( function() {
 
-	var emulatorUrl = new URL( 'https://richtr.github.io/deviceorientationemulator/emulator' );
+	var emulatorUrl = new URL( 'https://richtr.github.io/doe/emulator' );
 
 	function runDetection() {
 

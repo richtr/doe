@@ -26,7 +26,7 @@
 
 		// Open the original page
 		var pageUrl = getParameterByName( 'url' );
-		window.location = pageUrl || 'https://github.com/richtr/deviceorientationemulator';
+		window.location = pageUrl || 'https://github.com/richtr/doe';
 
 	}, false );
 
