@@ -35,7 +35,7 @@ TODO Describe the tools
 
 ##### Emulator Controller
 
-<img src="https://raw.githubusercontent.com/richtr/doe/images/controller_rotated_270.png" style="max-width: 100%">
+<img src="https://raw.githubusercontent.com/richtr/doe/images/controller_rotated_270.png" style="max-width: 300px">
 
 TODO Describe the controller
 
