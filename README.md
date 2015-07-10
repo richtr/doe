@@ -17,7 +17,7 @@ Add the Device Orientation Emulator script to any web page you want to allow the
 ```
 That's it!
 
-Now whenever this page loads and the current device is not supports it will ask the user if they want to run it in the emulator :)
+Now whenever this page loads and the current device does not support device orientation events this library will ask the user if they want to run your web page in the emulator :)
 
 #### Using this emulator
 
