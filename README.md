@@ -2,8 +2,6 @@
 
 ##### Doe is a highly capable device and screen orientation emulator for developing and debugging sensor-related web apps on desktop computers
 
-Doe is a simple and precise device orientation and screen orientation API emulator for web browsers that do not provide native sensor support.
-
 It can be used to build and debug device orientation and screen orientation aware applications without needing to constantly test it on different devices.
 
 If it works in doe then it works on devices.
