@@ -27,9 +27,9 @@ window.addEventListener( 'load', function() {
 			var normalizedGamma = event.gamma;
 
 			// normalize resulting data that is passed back to pages
-			if(normalizedAlpha == 360) normalizedAlpha = 0;
-			if(normalizedBeta == 180) normalizedBeta = -180;
-			if(normalizedGamma == 90) normalizedGamma = -90;
+			if(normalizedAlpha == 360) normalizedAlpha = 0;  // [   0, 360)
+			if(normalizedBeta == 180) normalizedBeta = -180; // [-180, 180)
+			if(normalizedGamma == 90) normalizedGamma = -90; // [ -90,  90)
 
 			sendMessage(
 				window.parent, {
