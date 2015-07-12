@@ -6,7 +6,10 @@ function dispatchDeviceOrientationEvent( values ) {
 	var event = document.createEvent( 'Event' );
 	event.initEvent( 'deviceorientation', true, true );
 
-	if ( data.alpha >= 360 ) data.alpha %= 360;
+	// Enforce range mathematical intervals
+	if ( data.alpha === 360 ) data.alpha %= 360;  // [0, 360)
+	if ( data.beta === 180 ) data.beta -= 1e-7;  // [-180, 180)
+	if ( data.gamma === 90 ) data.gamma -= 1e-7; // [-90, 90)
 
 	var eventData = {
 		'alpha': data.alpha,

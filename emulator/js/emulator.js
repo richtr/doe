@@ -98,7 +98,7 @@ function startEmulator() {
 
 		// Remove any previous hash value from page URL
 		selfUrl.hash = '';
-		replaceURL(selfUrl);
+		replaceURL( selfUrl );
 
 	} );
 
@@ -240,6 +240,10 @@ function startEmulator() {
 			orientationBeta.textContent = printDataValue( data.beta );
 			orientationGamma.textContent = printDataValue( data.gamma );
 
+			// Indicate that certain values are shown rounded for display purposes
+			if ( orientationBeta.textContent === "180" ) orientationBeta.textContent += "*";
+			if ( orientationGamma.textContent === "90" ) orientationGamma.textContent += "*";
+
 			var roll = data[ 'roll' ] || 0;
 			delete data[ 'roll' ]; // remove roll attribute from json
 
@@ -260,15 +264,15 @@ function startEmulator() {
 
 			window.setTimeout( function() {
 				var hashData = [
-					orientationAlpha.textContent,
-					orientationBeta.textContent,
-					orientationGamma.textContent,
-					( ( 360 - currentScreenOrientation ) % 360 )
-				].join(',');
+					parseFloat( orientationAlpha.textContent, 10 ),
+					parseFloat( orientationBeta.textContent, 10 ),
+					parseFloat( orientationGamma.textContent, 10 ),
+					360 - currentScreenOrientation
+				].join( ',' );
 
 				selfUrl.hash = '#[' + hashData + ']';
 
-				replaceURL(selfUrl);
+				replaceURL( selfUrl );
 			}, 100 );
 
 		},
