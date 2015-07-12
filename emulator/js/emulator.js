@@ -84,13 +84,22 @@ function startEmulator() {
 
 	$( 'button.reset' ).on( 'click', function( e ) {
 
+		// reset the controller
 		sendMessage(
 			controller.contentWindow, {
-				'action': 'setCoords',
+				'action': 'restart'
+			},
+			selfUrl.origin
+		);
+
+		// Update controller rendering
+		sendMessage(
+			controller.contentWindow, {
+				'action': 'rotateScreen',
 				'data': {
-					'alpha': 0,
-					'beta': 90,
-					'gamma': 0
+					'rotationDiff': currentScreenOrientation,
+					'totalRotation': currentScreenOrientation,
+					'updateControls': true
 				}
 			},
 			selfUrl.origin

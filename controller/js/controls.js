@@ -39,7 +39,11 @@ window.addEventListener( 'load', function() {
 
 		var actions = {
 			'start': function( data ) {
-				player.play(); // Go!!!
+				player.play();
+			},
+			'restart': function( data ) {
+				player.stop();
+				player.play();
 			},
 			'setCoords': function( data ) {
 				player.setManualOrientation( data.alpha, data.beta, data.gamma );

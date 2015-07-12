@@ -256,6 +256,8 @@ var APP = {
 
 		this.play = function( url ) {
 
+			controls.object.quaternion.set(0,0,0,1);
+
 			request = requestAnimationFrame( animate );
 			prevTime = performance.now();
 
