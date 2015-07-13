@@ -48,6 +48,15 @@ window.addEventListener( 'load', function() {
 			},
 			'setCoords': function( data ) {
 				player.setManualOrientation( data.alpha, data.beta, data.gamma );
+
+				if ( window.parent ) {
+					sendMessage(
+						window.parent, {
+							'action': 'updatePosition'
+						},
+						url.origin
+					);
+				}
 			},
 			'rotateScreen': function( data ) {
 				player.updateScreenOrientation( data );

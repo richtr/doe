@@ -23,7 +23,7 @@
 		<ul class="button-group">
 			<li>
 				<div class="info" style="padding-top: 2px; margin-right: 0; padding-right: 10px" title="Scale">
-					<input id="deviceScaling" type="range" min="0.2" max="1" step="0.1" value="1">
+					<input id="deviceScaling" type="range" min="0.2" max="1" step="0.1" value="1" tabindex="-1">
 				</div>
 			</li>
 			<li>
@@ -32,29 +32,33 @@
 				</div>
 			</li>
 			<li>
-				<button class="asphalt active" title="iPhone" data-rotate="true" data-device="iphone" data-viewport-width="320px" data-viewport-height="640px" data-user-agent="Mozilla/5.0 (iPhone; CPU iPhone OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A5376e Safari/8536.25"><i class="icon-mobile-phone"></i></button>
+				<button class="asphalt active" title="iPhone" data-rotate="true" data-device="iphone" data-viewport-width="320px" data-viewport-height="640px" data-user-agent="Mozilla/5.0 (iPhone; CPU iPhone OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A5376e Safari/8536.25"
+				tabindex="-1"><i class="icon-mobile-phone"></i></button>
 			</li>
 			<li>
-				<button class="charcoal" title="Android Phone" data-rotate="true" data-device="android" data-viewport-width="480px" data-viewport-height="720px" data-user-agent="Mozilla/5.0 (Linux; U; Android 2.3.6; en-us; Nexus S Build/GRK39F) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile Safari/533.1"><i class="android icon-mobile-phone"></i></button>
+				<button class="charcoal" title="Android Phone" data-rotate="true" data-device="android" data-viewport-width="480px" data-viewport-height="720px" data-user-agent="Mozilla/5.0 (Linux; U; Android 2.3.6; en-us; Nexus S Build/GRK39F) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile Safari/533.1"
+				tabindex="-1"><i class="android icon-mobile-phone"></i></button>
 			</li>
 			<li>
-				<button class="charcoal" title="Android Tablet" data-device="tablet" data-rotate="true" data-viewport-width="720px" data-viewport-height="1280px" data-user-agent="Mozilla/5.0 (Linux; U; Android 4.0.2; en-us; Galaxy Nexus Build/ICL53F) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30"><i class="android icon-tablet"></i></button>
+				<button class="charcoal" title="Android Tablet" data-device="tablet" data-rotate="true" data-viewport-width="720px" data-viewport-height="1280px" data-user-agent="Mozilla/5.0 (Linux; U; Android 4.0.2; en-us; Galaxy Nexus Build/ICL53F) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30"
+				tabindex="-1"><i class="android icon-tablet"></i></button>
 			</li>
 			<li>
-				<button class="charcoal" title="iPad" data-device="ipad" data-rotate="true" data-viewport-width="768px" data-viewport-height="1024px" data-user-agent="Mozilla/5.0 (iPad; CPU OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A5376e Safari/8536.25"><i class="icon-tablet"></i></button>
+				<button class="charcoal" title="iPad" data-device="ipad" data-rotate="true" data-viewport-width="768px" data-viewport-height="1024px" data-user-agent="Mozilla/5.0 (iPad; CPU OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A5376e Safari/8536.25"
+				tabindex="-1"><i class="icon-tablet"></i></button>
 			</li>
 			<li>
-				<div class="info" style="margin-right: 0px" title="Current Device Orientation Data (in degrees)">
+				<div class="info" style="margin-right: 0px; padding-right:0px;" title="Current Device Orientation Data (in degrees)">
 					a:
-					<span id="orientationAlpha">-</span>
+					<input type="number" id="orientationAlpha" value="-" tabindex="1">
 					b:
-					<span id="orientationBeta">-</span>
+					<input type="number" id="orientationBeta" value="-" tabindex="2">
 					g:
-					<span id="orientationGamma">-</span>
+					<input type="number" id="orientationGamma" value="-" tabindex="3">
 				</div>
 			</li>
 			<li>
-				<button class="charcoal reset" title="Reset Device Orientation Data" style="margin-right: 10px"><i class="icon-location-arrow"></i></button>
+				<button class="charcoal reset" title="Reset Device Orientation Data" style="margin-right: 10px" tabindex="-1"><i class="icon-location-arrow"></i></button>
 			</li>
 			<li>
 				<div class="info" style="margin: 0; padding-right: 10px" title="Current Screen Orientation Angle (in degrees)">
@@ -63,7 +67,7 @@
 				</div>
 			</li>
 			<li>
-				<button class="charcoal rotate" data-rotate="true" title="Rotate the Screen"><i class="icon-rotate-left"></i></button>
+				<button class="charcoal rotate" data-rotate="true" title="Rotate the Screen" tabindex="-1"><i class="icon-rotate-left"></i></button>
 			</li>
 		</ul>
 	</div>

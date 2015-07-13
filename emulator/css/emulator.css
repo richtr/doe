@@ -65,29 +65,40 @@ a, a:visited {
 		-webkit-transform: translateZ(0);
 		transform: translateZ(0);
 }
-
 div.info {
-	display: block;
-	font-family: Helvetica, Arial, sans-serif;
-	font-size: 11px;
-	height: 27.5px;
-	padding: 8px 20px;
-	margin: 0 10px;
-
-	background-color: #383636;
-	color: #cccccc;
+		display: block;
+		font-family: Helvetica, Arial, sans-serif;
+		font-size: 11px;
+		height: 27.5px;
+		padding: 8px 20px;
+		margin: 0 10px;
+		background-color: #383636;
+		color: #cccccc;
 }
-div.info span {
-	display: inline-block;
-	width: 50px;
-	height: 11px;
-	overflow: hidden;
+div.info input[type=number] {
+		display: inline-block;
+		overflow: hidden;
+		font-size: 11px;
+		margin: 0px;
+		padding: 0 2px;
+		width: 70px;
+		height: 15px;
+		text-align: center;
+		background-color: #383636;
+		color: #cccccc;
+		border-style: hidden;
+		border: 1px solid #383636;
 }
-
+div.info input[type=number]:hover {
+		border: 1px solid #605E5E;
+}
+div.info input[type=number]:active {
+		background-color: #333333;
+		border: 1px solid #605E5E;
+}
 button.rotate {
-	width: 39px;
+		width: 39px;
 }
-
 .landscape i:before {
 		-webkit-transform: rotate(-90deg);
 		-moz-transform: rotate(-90deg);

@@ -115,7 +115,7 @@ function startEmulator() {
 	// Add keyboard shortcuts to switch in-emulator device type
 	$( document ).on( 'keyup', function( e ) {
 		switch ( e.keyCode ) {
-			case 49:
+			/*case 49:
 				$( '[data-device="iphone"]' ).trigger( 'click' );
 				break;
 			case 50:
@@ -126,7 +126,7 @@ function startEmulator() {
 				break;
 			case 52:
 				$( '[data-device="ipad"]' ).trigger( 'click' );
-				break;
+				break;*/
 			case 32:
 			case 56:
 			case 82:
@@ -187,9 +187,70 @@ function startEmulator() {
 
 	}
 
-	var orientationAlpha = document.querySelector( '#orientationAlpha' );
-	var orientationBeta = document.querySelector( '#orientationBeta' );
-	var orientationGamma = document.querySelector( '#orientationGamma' );
+	var orientationAlpha = document.querySelector( 'input#orientationAlpha' );
+	var orientationBeta = document.querySelector( 'input#orientationBeta' );
+	var orientationGamma = document.querySelector( 'input#orientationGamma' );
+
+	var userIsEditing = false;
+
+	function onUserIsEditingStart(e) {
+		userIsEditing = true;
+	}
+
+	function onUserIsEditingEnd(e) {
+		var alpha = parseFloat(orientationAlpha.value, 10);
+		var beta = parseFloat(orientationBeta.value, 10);
+		var gamma = parseFloat(orientationGamma.value, 10);
+
+		// Fit all inputs within acceptable interval
+		alpha = alpha % 360;
+		if(beta < -180) beta = -180;
+		if(beta > 180) beta = 180;
+		if(gamma < -90) gamma = -90;
+		if(gamma > 90) gamma = 90;
+
+		sendMessage(
+			controller, {
+				'action': 'setCoords',
+				'data': {
+					'alpha': alpha || 0,
+					'beta': beta || 0,
+					'gamma': gamma || 0
+				}
+			},
+			selfUrl.origin
+		);
+
+	}
+
+	function stopUserEditing(e) {
+		userIsEditing = false;
+	}
+
+	function stopUserEditingKey(e) {
+		var keyCode = e.which || e.keyCode;
+		if (keyCode !== 13) {
+			return true;
+		}
+		// Force blur when return key is pressed
+		var target = e.target;
+		target.blur();
+	}
+
+	orientationAlpha.addEventListener('focus', onUserIsEditingStart, false);
+	orientationAlpha.addEventListener('change', onUserIsEditingEnd, false);
+	orientationAlpha.addEventListener('keypress', stopUserEditingKey, false);
+	orientationAlpha.addEventListener('blur', stopUserEditing, false);
+
+	orientationBeta.addEventListener('focus', onUserIsEditingStart, false);
+	orientationBeta.addEventListener('change', onUserIsEditingEnd, false);
+	orientationBeta.addEventListener('keypress', stopUserEditingKey, false);
+	orientationBeta.addEventListener('blur', stopUserEditing, false);
+
+	orientationGamma.addEventListener('focus', onUserIsEditingStart, false);
+	orientationGamma.addEventListener('change', onUserIsEditingEnd, false);
+	orientationGamma.addEventListener('keypress', stopUserEditingKey, false);
+	orientationGamma.addEventListener('blur', stopUserEditing, false);
 
 	var screenOrientationEl = document.querySelector( '#screenOrientation' );
 
@@ -250,9 +311,11 @@ function startEmulator() {
 		'newData': function( data ) {
 
 			// Print deviceorientation data values in GUI
-			orientationAlpha.textContent = printDataValue( data.alpha );
-			orientationBeta.textContent = printDataValue( data.beta );
-			orientationGamma.textContent = printDataValue( data.gamma );
+			if (!userIsEditing) {
+				orientationAlpha.value = printDataValue( data.alpha );
+				orientationBeta.value = printDataValue( data.beta );
+				orientationGamma.value = printDataValue( data.gamma );
+			}
 
 			// Indicate that certain values are shown rounded for display purposes
 			if ( orientationBeta.textContent === "180" ) orientationBeta.textContent += "*";
@@ -278,9 +341,9 @@ function startEmulator() {
 
 			window.setTimeout( function() {
 				var hashData = [
-					parseFloat( orientationAlpha.textContent, 10 ),
-					parseFloat( orientationBeta.textContent, 10 ),
-					parseFloat( orientationGamma.textContent, 10 ), ( 360 - currentScreenOrientation ) % 360
+					parseFloat( orientationAlpha.value, 10 ),
+					parseFloat( orientationBeta.value, 10 ),
+					parseFloat( orientationGamma.value, 10 ), ( 360 - currentScreenOrientation ) % 360
 				].join( ',' );
 
 				selfUrl.hash = '#[' + hashData + ']';
