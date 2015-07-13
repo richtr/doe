@@ -7,22 +7,27 @@ function startEmulator() {
 
 	var deviceFrame = document.querySelector( 'iframe#deviceFrame' );
 
-	controller.onload = function() {
+	controller.addEventListener( 'load', function() {
+		controller.isLoaded = true;
+
 		controller.style.display = 'block';
 		emulatorMenu.style.display = 'block';
-	}
+	}, false );
+
+	// Load controller
 	controller.src = '../controller/index.html';
 
-	deviceFrame.onload = function() {
+	deviceFrame.addEventListener( 'load', function() {
+		deviceFrame.isLoaded = true;
 		deviceFrame.style.display = 'block';
-	}
+	}, false );
 
 	// Load target in screen iframe
 	deviceFrame.src = "screen.html" + location.search;
 
 	var scaleFactor = 1;
 
-	$( 'body' ).on( 'click', 'button[data-viewport-width]', function( e ) {
+	$( 'button[data-viewport-width]' ).on( 'click', function( e ) {
 		if ( $( this ).attr( 'data-viewport-width' ) == '100%' ) {
 			newWidth = '100%';
 		} else {
@@ -54,7 +59,7 @@ function startEmulator() {
 
 		// Relay new dimensions on to deviceFrame
 		sendMessage(
-			deviceFrame.contentWindow, {
+			deviceFrame, {
 				'action': 'updateScreenDimensions',
 				'data': {
 					'newWidth': newDimension + "px",
@@ -67,7 +72,7 @@ function startEmulator() {
 		return false;
 	} );
 
-	$( 'body' ).on( 'click', 'button.rotate', function( e ) {
+	$( 'button.rotate' ).on( 'click', function( e ) {
 
 		var currentRotation = currentScreenOrientation == 0 ? 360 : currentScreenOrientation;
 
@@ -86,7 +91,7 @@ function startEmulator() {
 
 		// reset the controller
 		sendMessage(
-			controller.contentWindow, {
+			controller, {
 				'action': 'restart'
 			},
 			selfUrl.origin
@@ -94,7 +99,7 @@ function startEmulator() {
 
 		// Update controller rendering
 		sendMessage(
-			controller.contentWindow, {
+			controller, {
 				'action': 'rotateScreen',
 				'data': {
 					'rotationDiff': currentScreenOrientation,
@@ -104,10 +109,6 @@ function startEmulator() {
 			},
 			selfUrl.origin
 		);
-
-		// Remove any previous hash value from page URL
-		selfUrl.hash = '';
-		replaceURL( selfUrl );
 
 	} );
 
@@ -145,7 +146,7 @@ function startEmulator() {
 
 		// Update controller rendering
 		sendMessage(
-			controller.contentWindow, {
+			controller, {
 				'action': 'rotateScreen',
 				'data': {
 					'rotationDiff': -rotationDiff,
@@ -158,7 +159,7 @@ function startEmulator() {
 
 		// Notify emulated page that screen orientation has changed
 		sendMessage(
-			deviceFrame.contentWindow, {
+			deviceFrame, {
 				'action': 'screenOrientationChange',
 				'data': 360 - requestedScreenOrientation
 			},
@@ -195,24 +196,26 @@ function startEmulator() {
 	var actions = {
 		'connect': function( data ) {
 
+			var urlHash = selfUrl.hash;
+
 			// Tell controller to start rendering
 			sendMessage(
-				controller.contentWindow, {
+				controller, {
 					'action': 'start'
 				},
 				selfUrl.origin
 			);
 
 			// If any deviceorientation URL params are provided, send them to the controller
-			if ( selfUrl.hash.length > 6 ) {
-				var coords = selfUrl.hash.substring( 1 );
+			if ( urlHash.length > 6 ) {
+				var coords = urlHash.substring( 1 );
 				try {
 					var coordsObj = JSON.parse( coords );
 
 					if ( ( coordsObj.length === 3 || coordsObj.length === 4 ) && ( coordsObj[ 0 ] || coordsObj[ 1 ] || coordsObj[ 2 ] ) ) {
 
 						sendMessage(
-							controller.contentWindow, {
+							controller, {
 								'action': 'setCoords',
 								'data': {
 									'alpha': coordsObj[ 0 ] || 0,
@@ -228,11 +231,13 @@ function startEmulator() {
 							var requestedScreenOrientation = coordsObj[ 3 ] * 1;
 							if ( requestedScreenOrientation / 90 > 0 && requestedScreenOrientation / 90 < 4 ) {
 
-								deviceFrame.contentWindow.screenFrame.onload = function() {
-									window.setTimeout(function() {
-										updateScreenOrientation( ( 360 - requestedScreenOrientation ) % 360, false );
-									}, 200);
-								};
+								if ( deviceFrame.contentWindow.screenFrame.isLoaded ) {
+									updateScreenOrientation( 360 - requestedScreenOrientation, false );
+								} else {
+									deviceFrame.contentWindow.screenFrame.addEventListener( 'load', function() {
+										updateScreenOrientation( 360 - requestedScreenOrientation, false );
+									}, false );
+								}
 
 							}
 						}
@@ -258,7 +263,7 @@ function startEmulator() {
 
 			// Post deviceorientation data to deviceFrame window
 			sendMessage(
-				deviceFrame.contentWindow, {
+				deviceFrame, {
 					'action': 'deviceorientation',
 					'data': data
 				},
@@ -275,8 +280,7 @@ function startEmulator() {
 				var hashData = [
 					parseFloat( orientationAlpha.textContent, 10 ),
 					parseFloat( orientationBeta.textContent, 10 ),
-					parseFloat( orientationGamma.textContent, 10 ),
-					360 - currentScreenOrientation
+					parseFloat( orientationGamma.textContent, 10 ), ( 360 - currentScreenOrientation ) % 360
 				].join( ',' );
 
 				selfUrl.hash = '#[' + hashData + ']';
@@ -289,20 +293,14 @@ function startEmulator() {
 
 			updateScreenOrientation( ( 360 - data ) % 360, true );
 
-			var btn = $( '.rotate' );
-			var btnIcon = $( 'i', btn );
-
-			btn.prop( "disabled", true ).attr( "title", "Screen Rotation is locked by page" );
-			btnIcon.addClass( 'icon-lock' ).removeClass( 'icon-rotate-left' );
+			$( 'button.rotate' ).prop( "disabled", true ).attr( "title", "Screen Rotation is locked by page" );
+			$( 'i', 'button.rotate' ).addClass( 'icon-lock' ).removeClass( 'icon-rotate-left' );
 
 		},
 		'unlockScreenOrientation': function( data ) {
 
-			var btn = $( 'button.rotate' );
-			var btnIcon = $( 'i', btn );
-
-			btnIcon.addClass( 'icon-rotate-left' ).removeClass( 'icon-lock' );
-			btn.attr( "title", "Rotate the Screen" ).prop( "disabled", false );
+			$( 'button.rotate' ).addClass( 'icon-rotate-left' ).removeClass( 'icon-lock' );
+			$( 'i', 'button.rotate' ).attr( "title", "Rotate the Screen" ).prop( "disabled", false );
 
 		}
 	}

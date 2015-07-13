@@ -6,22 +6,19 @@ function getParameterByName( name ) {
 }
 
 function printDataValue( input ) {
-	if ( input === undefined )
-		return "undefined";
-	if ( input === null )
-		return "null";
-	if ( input === true )
-		return "true";
-	if ( input === false )
-		return "false";
-	if ( Object.prototype.toString.call( input ) === "[object Number]" )
-		return Math.round( ( input + 0.00001 ) * 100 ) / 100; // return to 2 decimal places
-
-	return ( input + "" ); // force stringify
+	input *= 1; // force to number for emulator display
+	return Math.round( ( input + 0.00001 ) * 100 ) / 100; // return to 2 decimal places
 }
 
 function sendMessage( target, json, origin ) {
-	target[ 'postMessage' ]( JSON.stringify( json ), origin || '*' );
+	// If frame is not loaded, dispatch it when it loads
+	if ( !target.isLoaded ) {
+		target.addEventListener( 'load', function() {
+			target.contentWindow[ 'postMessage' ]( JSON.stringify( json ), origin || '*' );
+		}, false );
+	} else { // Otherwise, send message immediately
+		target.contentWindow[ 'postMessage' ]( JSON.stringify( json ), origin || '*' );
+	}
 }
 
 function replaceURL( urlObj ) {

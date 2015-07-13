@@ -13,7 +13,7 @@
 		} else {
 			window.addEventListener( 'load', startEmulator, false );
 		}
-	}, 1000 );
+	}, 2000 );
 
 	function check() {
 		// Discard first event (false positive on Chromium Desktop browsers)

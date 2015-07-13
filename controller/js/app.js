@@ -154,7 +154,7 @@ var APP = {
 			var screenLeftInv = scene.getObjectByProperty( 'name', 'screen_left_inverse', true );
 			var screenRightInv = scene.getObjectByProperty( 'name', 'screen_right_inverse', true );
 
-				if ( data.totalRotation % 180 !== 0 ) {
+			if ( data.totalRotation % 180 !== 0 ) {
 
 				screenTop.visible = false;
 				screenBottom.visible = false;
@@ -256,7 +256,7 @@ var APP = {
 
 		this.play = function( url ) {
 
-			controls.object.quaternion.set(0,0,0,1);
+			controls.object.quaternion.set( 0, 0, 0, 1 );
 
 			request = requestAnimationFrame( animate );
 			prevTime = performance.now();

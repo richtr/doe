@@ -32,7 +32,8 @@ window.addEventListener( 'load', function() {
 						'absolute': event.absolute,
 						'roll': event.roll
 					}
-				}
+				},
+				url.origin
 			);
 
 		}, false );
@@ -55,7 +56,8 @@ window.addEventListener( 'load', function() {
 					sendMessage(
 						window.parent, {
 							'action': 'updatePosition'
-						}
+						},
+						url.origin
 					);
 				}
 			}
@@ -80,7 +82,7 @@ window.addEventListener( 'load', function() {
 			sendMessage(
 				window.parent, {
 					'action': 'connect'
-				}
+				}, url.origin
 			);
 		}
 

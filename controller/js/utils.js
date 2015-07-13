@@ -7,7 +7,7 @@ function dispatchDeviceOrientationEvent( values ) {
 	event.initEvent( 'deviceorientation', true, true );
 
 	var eventData = {
-		'alpha': data.alpha,
+		'alpha': data.alpha % 360,
 		'beta': data.beta,
 		'gamma': data.gamma,
 		'absolute': true,

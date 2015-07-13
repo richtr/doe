@@ -43,6 +43,10 @@ window.addEventListener( 'load', function() {
 
   var screenFrame = document.querySelector( 'iframe#screenFrame' );
 
+  screenFrame.addEventListener( 'load', function() {
+    screenFrame.isLoaded = true;
+  }, false );
+
   if ( urlParam.length > 0 ) {
     if ( urlParam.substr( 0, 4 ) != 'http' ) {
       urlParam = 'http://' + urlParam;
@@ -56,19 +60,30 @@ window.addEventListener( 'load', function() {
     'deviceorientation': function( data ) {
 
       // Propagate on to target page
-      screenFrame.contentWindow.postMessage( JSON.stringify( {
-        'action': 'deviceorientation',
-        'data': data
-      } ), targetUrl.origin );
+      if ( screenFrame.isLoaded ) {
+        screenFrame.contentWindow.postMessage( JSON.stringify( {
+          'action': 'deviceorientation',
+          'data': data
+        } ), targetUrl.origin );
+      } // otherwise drop this deviceorientation event
 
     },
     'screenOrientationChange': function( data ) {
 
-      // Propagate on to target page
-      screenFrame.contentWindow.postMessage( JSON.stringify( {
-        'action': 'screenOrientationChange',
-        'data': data
-      } ), targetUrl.origin );
+      // Propagate on to target page when it is fully loaded
+      if ( screenFrame.isLoaded ) {
+        screenFrame.contentWindow.postMessage( JSON.stringify( {
+          'action': 'screenOrientationChange',
+          'data': data
+        } ), targetUrl.origin );
+      } else {
+        screenFrame.addEventListener( 'load', function() {
+          screenFrame.contentWindow.postMessage( JSON.stringify( {
+            'action': 'screenOrientationChange',
+            'data': data
+          } ), targetUrl.origin );
+        }, false );
+      }
 
     },
     'updateScreenDimensions': function( data ) {
@@ -82,20 +97,20 @@ window.addEventListener( 'load', function() {
     },
     'lockScreenOrientation': function( data ) {
       // Send up to parent emulator page
-      if (!window.parent) return;
+      if ( !window.parent ) return;
 
-      window.parent.postMessage(JSON.stringify( {
+      window.parent.postMessage( JSON.stringify( {
         'action': 'lockScreenOrientation',
         'data': data
-      } ), '*');
+      } ), selfUrl.origin );
     },
     'unlockScreenOrientation': function( data ) {
       // Send up to parent emulator page
-      if (!window.parent) return;
+      if ( !window.parent ) return;
 
-      window.parent.postMessage(JSON.stringify( {
+      window.parent.postMessage( JSON.stringify( {
         'action': 'unlockScreenOrientation'
-      } ), '*');
+      } ), selfUrl.origin );
     }
   };
 
