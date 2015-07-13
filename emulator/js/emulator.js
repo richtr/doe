@@ -195,6 +195,14 @@ function startEmulator() {
 	var actions = {
 		'connect': function( data ) {
 
+			// Tell controller to start rendering
+			sendMessage(
+				controller.contentWindow, {
+					'action': 'start'
+				},
+				selfUrl.origin
+			);
+
 			// If any deviceorientation URL params are provided, send them to the controller
 			if ( selfUrl.hash.length > 6 ) {
 				var coords = selfUrl.hash.substring( 1 );
@@ -222,7 +230,7 @@ function startEmulator() {
 
 								deviceFrame.contentWindow.screenFrame.onload = function() {
 
-									updateScreenOrientation( ( 360 - requestedScreenOrientation ) % 360, true );
+									updateScreenOrientation( ( 360 - requestedScreenOrientation ) % 360, false );
 
 								};
 
@@ -232,14 +240,6 @@ function startEmulator() {
 					}
 				} catch ( e ) {}
 			}
-
-			// Tell controller to start rendering
-			sendMessage(
-				controller.contentWindow, {
-					'action': 'start'
-				},
-				selfUrl.origin
-			);
 
 		},
 		'newData': function( data ) {
