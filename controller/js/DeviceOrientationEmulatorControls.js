@@ -58,12 +58,14 @@ var DeviceOrientationEmulatorControls = function( object, domElement ) {
 		var eventData;
 
 		return function( name ) {
-			eventData = arguments || {};
+			window.setTimeout(function() {
+				eventData = arguments || {};
 
-			eventData.type = name;
-			eventData.target = this;
+				eventData.type = name;
+				eventData.target = this;
 
-			this.dispatchEvent( eventData );
+				this.dispatchEvent( eventData );
+			}.bind( this ), 1);
 		}.bind( this );
 	}.bind( this )();
 
