@@ -22,13 +22,22 @@ window.addEventListener( 'load', function() {
 
 			if ( !window.parent ) return;
 
+			var normalizedAlpha = event.alpha;
+			var normalizedBeta = event.beta;
+			var normalizedGamma = event.gamma;
+
+			// normalize resulting data that is passed back to pages
+			if(normalizedAlpha == 360) normalizedAlpha = 0;  // [   0, 360)
+			if(normalizedBeta == 180) normalizedBeta = -180; // [-180, 180)
+			if(normalizedGamma == 90) normalizedGamma = -90; // [ -90,  90)
+
 			sendMessage(
 				window.parent, {
 					'action': 'newData',
 					'data': {
-						'alpha': event.alpha,
-						'beta': event.beta,
-						'gamma': event.gamma,
+						'alpha': normalizedAlpha,
+						'beta': normalizedBeta,
+						'gamma': normalizedGamma,
 						'absolute': event.absolute,
 						'roll': event.roll
 					}
