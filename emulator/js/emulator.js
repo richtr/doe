@@ -299,8 +299,8 @@ function startEmulator() {
 		},
 		'unlockScreenOrientation': function( data ) {
 
-			$( 'button.rotate' ).addClass( 'icon-rotate-left' ).removeClass( 'icon-lock' );
-			$( 'i', 'button.rotate' ).attr( "title", "Rotate the Screen" ).prop( "disabled", false );
+			$( 'button.rotate' ).attr( "title", "Rotate the Screen" ).prop( "disabled", false );
+			$( 'i', 'button.rotate' ).addClass( 'icon-rotate-left' ).removeClass( 'icon-lock' );
 
 		}
 	}
