@@ -84,13 +84,10 @@ div.info span {
 	overflow: hidden;
 }
 
-button.rotate i:before, button[data-rotate] i:before {
-		-webkit-transition: all 0.15s linear;
-		-moz-transition: all 0.15s linear;
-		-ms-transition: all 0.15s linear;
-		-o-transition: all 0.15s linear;
-		transition: all 0.15s linear;
+button.rotate {
+	width: 39px;
 }
+
 .landscape i:before {
 		-webkit-transform: rotate(-90deg);
 		-moz-transform: rotate(-90deg);
