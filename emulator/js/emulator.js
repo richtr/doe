@@ -222,7 +222,7 @@ function startEmulator() {
 
 								deviceFrame.contentWindow.screenFrame.onload = function() {
 
-									updateScreenOrientation( ( 360 - requestedScreenOrientation ) % 360, false );
+									updateScreenOrientation( ( 360 - requestedScreenOrientation ) % 360, true );
 
 								};
 
