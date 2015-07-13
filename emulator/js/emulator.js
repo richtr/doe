@@ -229,9 +229,9 @@ function startEmulator() {
 							if ( requestedScreenOrientation / 90 > 0 && requestedScreenOrientation / 90 < 4 ) {
 
 								deviceFrame.contentWindow.screenFrame.onload = function() {
-
-									updateScreenOrientation( ( 360 - requestedScreenOrientation ) % 360, false );
-
+									window.setTimeout(function() {
+										updateScreenOrientation( ( 360 - requestedScreenOrientation ) % 360, false );
+									}, 200);
 								};
 
 							}
