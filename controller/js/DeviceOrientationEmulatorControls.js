@@ -215,8 +215,6 @@ var DeviceOrientationEmulatorControls = function( object, domElement ) {
 
 		return function() {
 
-			objQuat.copy( tmpQuat );
-
 			if ( appState === CONTROLLER_STATE.MANUAL_ROTATE ) {
 
 				lat = ( startY - currentY ) * scrollSpeedY;
@@ -225,13 +223,19 @@ var DeviceOrientationEmulatorControls = function( object, domElement ) {
 				phi = THREE.Math.degToRad( lat );
 				theta = THREE.Math.degToRad( lon );
 
-				// Apply y-based quaternion rotation
+				// Reset objQuat
+				objQuat.set(0,0,0,1);
+
+				// Apply y-based mouse rotation
 				rotQuat.set( 0, Math.sin( theta / 2 ), 0, Math.cos( theta / 2 ) );
 				objQuat.multiply( rotQuat );
 
-				// Apply z-based quaternion rotation
+				// Apply z-based mouse rotation
 				rotQuat.set( Math.sin( phi / 2 ), 0, 0, Math.cos( phi / 2 ) );
 				objQuat.multiply( rotQuat );
+
+				// Apply existing object rotation to calculated mouse rotation
+				objQuat.multiply( tmpQuat );
 
 				this.object.quaternion.copy( objQuat );
 
