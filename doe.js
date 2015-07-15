@@ -276,12 +276,12 @@
 
 		// We were kicked from the referrer!
 		loadSWAL( function() {
-			swal({
+			swal( {
 				title: "Compass detected.",
 				text: "You have been redirected here from the emulator because your device supports the required hardware sensor events.",
 				type: "success",
 				confirmButtonColor: "#638450"
-			});
+			} );
 		} );
 
 	} else if ( document.referrer == "" || window.parent == window || parentUrl.origin !== emulatorUrl.origin ) {
