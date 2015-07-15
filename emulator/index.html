@@ -7,12 +7,16 @@
 	<title>doe - The Device and Screen Orientation Emulator</title>
 
 	<script type="text/javascript" src="js/libs/jquery-1.10.2.min.js"></script>
-	<link type="text/css" rel="stylesheet" href="css/groundwork.css">
-	<link type="text/css" rel="stylesheet" href="css/emulator.css">
 
 	<script type="text/javascript" src="js/utils.js"></script>
 	<script type="text/javascript" src="js/supports.js"></script>
+
+	<link type="text/css" rel="stylesheet" href="css/groundwork.css">
+	<link type="text/css" rel="stylesheet" href="css/emulator.css">
 	<script type="text/javascript" src="js/emulator.js"></script>
+
+	<link type="text/css" rel="stylesheet" href="css/timeline.css">
+	<script type="text/javascript" src="js/timeliner.js"></script>
 </head>
 
 <body class="emulator-page">
@@ -50,10 +54,8 @@
 			<li>
 				<div class="info" style="margin-right: 0px; padding-right:0px;" title="Current Device Orientation Data (in degrees)">
 					a:
-					<input type="number" id="orientationAlpha" value="-" tabindex="1">
-					b:
-					<input type="number" id="orientationBeta" value="-" tabindex="2">
-					g:
+					<input type="number" id="orientationAlpha" value="-" tabindex="1"> b:
+					<input type="number" id="orientationBeta" value="-" tabindex="2"> g:
 					<input type="number" id="orientationGamma" value="-" tabindex="3">
 				</div>
 			</li>
@@ -74,6 +76,35 @@
 
 	<div id="deviceFrameWrapper">
 		<iframe id="deviceFrame" class="relative" style="z-index:1;" src="" frameborder="0"></iframe>
+	</div>
+
+	<div id="timeline" class="bounceInUp animated" style="z-index:3;">
+		<ul class="button-group">
+			<li>
+				<button id="play" class="charcoal" title="Play timeline" tabindex="4"><i class="icon-play"></i></button>
+			</li>
+			<li>
+				<div class="info" style="margin-right:0px">
+					<span>Frames:</span>
+				</div>
+			</li>
+		</ul>
+		<ul id="frame-group" class="button-group">
+			<li>
+				<button class="frame asphalt active" data-frame-number="0" tabindex="-1">1</button>
+			</li>
+			<!-- additional timeline frames go here when created -->
+		</ul>
+		<ul class="button-group">
+			<li>
+				<button id="addNewFrame" class="frame blue" title="Add a new animation frame" tabindex="-1"><i class="icon-plus"></i></button>
+			</li>
+		</ul>
+		<ul class="button-group">
+			<li>
+				<button id="clearTimeline" class="frame red" title="Remove all animation frames" tabindex="-1"><i class="icon-trash"></i></button>
+			</li>
+		</ul>
 	</div>
 
 </body>

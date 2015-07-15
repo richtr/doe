@@ -28,6 +28,8 @@ var APP = {
 		var rotation = new THREE.Euler( 0, 0, 0, 'YXZ' );
 		var rotQuat = new THREE.Quaternion();
 
+		var tweenInProgress = false;
+
 		this.load = function( json ) {
 
 			renderer = new THREE.WebGLRenderer( {
@@ -126,19 +128,173 @@ var APP = {
 
 		};
 
-		this.setManualOrientation = function( alpha, beta, gamma ) {
+		this.setManualOrientation = ( function() {
 
-			var _x = THREE.Math.degToRad( beta || 0 );
-			var _y = THREE.Math.degToRad( alpha || 0 );
-			var _z = THREE.Math.degToRad( gamma || 0 );
+			var _q = new THREE.Quaternion();
 
-			euler.set( _x, _y, -_z, 'YXZ' );
+			return function( alpha, beta, gamma ) {
 
-			// Apply provided deviceorientation values to controller
-			controls.object.quaternion.setFromEuler( euler );
-			controls.object.quaternion.multiply( worldQuat );
+				var _x = THREE.Math.degToRad( beta || 0 );
+				var _y = THREE.Math.degToRad( alpha || 0 );
+				var _z = THREE.Math.degToRad( gamma || 0 );
 
-		}
+				euler.set( _x, _y, -_z, 'YXZ' );
+
+				// Apply provided deviceorientation values to controller
+				_q.setFromEuler( euler );
+				_q.multiply( worldQuat );
+
+				controls.object.quaternion.copy( _q );
+
+			};
+
+		} )();
+
+		this.playback = ( function() {
+
+			var source, destination;
+			var _this;
+
+			var _a0, _b0, _g0;
+
+			return function( data ) {
+
+				_this = this;
+
+				// Store original device orientation values
+				_a0 = deviceOrientation.alpha;
+				_b0 = deviceOrientation.beta;
+				_g0 = deviceOrientation.gamma;
+
+				var frameNumber = 0;
+
+				// Tween through each of our animation frames
+				data.frames.reduce( function( chain, frame ) {
+					// Add these actions to the end of the promise chain
+					return chain.then( function() {
+						if ( frameNumber > 0 ) {
+							sendMessage(
+								window.parent, {
+									'action': 'updateActiveFrame',
+									'data': frameNumber
+								}
+							);
+						}
+						frameNumber++;
+
+						if ( frame.type === 0 ) { // SET
+							return _this.set( frame );
+						} else { // ANIMATION
+							return _this.tween( frame );
+						}
+					} );
+				}, Promise.resolve() ).then( function() {
+					// Rollback to original device orientation values
+					window.setTimeout( function() {
+						sendMessage(
+							window.parent, {
+								'action': 'resetTimeline'
+							}
+						);
+
+						_this.setManualOrientation( _a0, _b0, _g0 );
+					}, 1000 );
+				} );
+
+			};
+
+		} )();
+
+		this.set = ( function() {
+
+			var _this;
+
+			var waitTime, playTime;
+
+			return function( frame ) {
+
+				_this = this;
+
+				var setPromise = new Promise( function( resolve, reject ) {
+
+					waitTime = frame.offset * 1000;
+					playTime = frame.duration * 1000;
+
+					window.setTimeout( function() {
+
+						_this.setManualOrientation( frame.data.alpha, frame.data.beta, frame.data.gamma );
+
+						window.setTimeout( function() {
+							resolve(); // this Promise can never reject
+						}, playTime );
+
+					}, waitTime );
+
+				} );
+
+				return setPromise;
+
+			};
+
+		} )();
+
+		this.tween = ( function() {
+
+			var source, destination;
+			var _this;
+
+			var waitTime, playTime;
+
+			return function( frame ) {
+
+				_this = this;
+
+				var tweenPromise = new Promise( function( resolve, reject ) {
+
+					tweenInProgress = true;
+
+					source = {
+						alpha: deviceOrientation.alpha || 0,
+						beta: deviceOrientation.beta || 0,
+						gamma: deviceOrientation.gamma || 0
+					};
+
+					destination = {};
+
+					if ( frame.data.alpha !== source.alpha ) destination.alpha = frame.data.alpha;
+					if ( frame.data.beta !== source.beta ) destination.beta = frame.data.beta;
+					if ( frame.data.gamma !== source.gamma ) destination.gamma = frame.data.gamma;
+
+					waitTime = frame.offset * 1000;
+					playTime = frame.duration * 1000;
+
+					var throwError = window.setTimeout( function() {
+						tweenInProgress = false;
+						reject();
+					}, waitTime + 200 );
+
+					var tween = new TWEEN.Tween( source )
+						.delay( waitTime )
+						.to( destination, playTime )
+						.onStart( function() {
+							window.clearTimeout( throwError );
+						} )
+						.onUpdate( function() {
+							_this.setManualOrientation( this.alpha, this.beta, this.gamma );
+						} )
+						.onComplete( function() {
+							tweenInProgress = false;
+							resolve();
+						} )
+						.start();
+
+				} );
+
+				return tweenPromise;
+
+			};
+
+		} )();
 
 		this.updateScreenOrientation = function( data ) {
 
@@ -229,6 +385,10 @@ var APP = {
 				delta: time - prevTime
 			} );
 
+			if ( tweenInProgress ) {
+				TWEEN.update( time );
+			}
+
 			controls.update();
 
 			// *** Calculate device orientation quaternion (without affecting rendering)
@@ -238,7 +398,7 @@ var APP = {
 			camQuat.inverse();
 
 			// Derive Tait-Bryan angles from calculated device orientation quaternion
-			deviceOrientation.setFromQuaternion( camQuat );
+			deviceOrientation.setFromQuaternion( camQuat, 'YXZ' );
 
 			// Calculate required emulator screen roll compensation required
 			var rollZ = rotation.setFromQuaternion( controls.object.quaternion, 'YXZ' ).z;

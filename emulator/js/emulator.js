@@ -1,6 +1,6 @@
-function startEmulator() {
+var selfUrl = new URL( window.location );
 
-	var selfUrl = new URL( window.location );
+function startEmulator() {
 
 	var controller = document.querySelector( 'iframe#controller' );
 	var emulatorMenu = document.querySelector( '#emulator' );
@@ -76,7 +76,14 @@ function startEmulator() {
 
 		var currentRotation = currentScreenOrientation == 0 ? 360 : currentScreenOrientation;
 
-		updateScreenOrientation( currentRotation - 90, true );
+		// Post message to self to update screen orientation
+		postMessage( JSON.stringify( {
+			'action': 'updateScreenOrientation',
+			'data': {
+				'totalRotation': currentRotation - 90,
+				'updateControls': true
+			}
+		} ), selfUrl.origin );
 
 	} );
 
@@ -112,102 +119,29 @@ function startEmulator() {
 
 	} );
 
-	// Add keyboard shortcuts to switch in-emulator device type
-	$( document ).on( 'keyup', function( e ) {
-		switch ( e.keyCode ) {
-			/*case 49:
-				$( '[data-device="iphone"]' ).trigger( 'click' );
-				break;
-			case 50:
-				$( '[data-device="android"]' ).trigger( 'click' );
-				break;
-			case 51:
-				$( '[data-device="tablet"]' ).trigger( 'click' );
-				break;
-			case 52:
-				$( '[data-device="ipad"]' ).trigger( 'click' );
-				break;*/
-			case 32:
-			case 56:
-			case 82:
-				$( '.rotate' ).trigger( 'click' );
-				break;
-		}
-	} );
-
-	var currentScreenOrientation = 360;
-
-	function updateScreenOrientation( requestedScreenOrientation, updateControls ) {
-
-		// Calculate rotation difference
-		var currentRotation = currentScreenOrientation == 0 ? 360 : currentScreenOrientation;
-
-		var rotationDiff = currentRotation - requestedScreenOrientation;
-
-		// Update controller rendering
-		sendMessage(
-			controller, {
-				'action': 'rotateScreen',
-				'data': {
-					'rotationDiff': -rotationDiff,
-					'totalRotation': requestedScreenOrientation,
-					'updateControls': updateControls
-				}
-			},
-			selfUrl.origin
-		);
-
-		// Notify emulated page that screen orientation has changed
-		sendMessage(
-			deviceFrame, {
-				'action': 'screenOrientationChange',
-				'data': 360 - requestedScreenOrientation
-			},
-			selfUrl.origin
-		);
-
-		if ( ( ( currentRotation / 90 ) % 2 ) !== ( ( requestedScreenOrientation / 90 ) % 2 ) ) {
-
-			$( 'button[data-rotate=true]' ).each( function() {
-				width = $( this ).attr( 'data-viewport-width' );
-				height = $( this ).attr( 'data-viewport-height' );
-				$( this ).attr( 'data-viewport-width', height );
-				$( this ).attr( 'data-viewport-height', width );
-				if ( $( this ).hasClass( 'active' ) ) {
-					$( this ).trigger( 'click' );
-				}
-			} );
-
-		}
-
-		screenOrientationEl.textContent = ( 360 - requestedScreenOrientation ) % 360;
-
-		// Update current screen orientation
-		currentScreenOrientation = requestedScreenOrientation;
-
-	}
-
 	var orientationAlpha = document.querySelector( 'input#orientationAlpha' );
 	var orientationBeta = document.querySelector( 'input#orientationBeta' );
 	var orientationGamma = document.querySelector( 'input#orientationGamma' );
 
+	var currentScreenOrientation = 360;
+
 	var userIsEditing = false;
 
-	function onUserIsEditingStart(e) {
+	function onUserIsEditingStart( e ) {
 		userIsEditing = true;
 	}
 
-	function onUserIsEditingEnd(e) {
-		var alpha = parseFloat(orientationAlpha.value, 10);
-		var beta = parseFloat(orientationBeta.value, 10);
-		var gamma = parseFloat(orientationGamma.value, 10);
+	function onUserIsEditingEnd( e ) {
+		var alpha = parseFloat( orientationAlpha.value, 10 );
+		var beta = parseFloat( orientationBeta.value, 10 );
+		var gamma = parseFloat( orientationGamma.value, 10 );
 
 		// Fit all inputs within acceptable interval
 		alpha = alpha % 360;
-		if(beta < -180) beta = -180;
-		if(beta > 180) beta = 180;
-		if(gamma < -90) gamma = -90;
-		if(gamma > 90) gamma = 90;
+		if ( beta < -180 ) beta = -180;
+		if ( beta > 180 ) beta = 180;
+		if ( gamma < -90 ) gamma = -90;
+		if ( gamma > 90 ) gamma = 90;
 
 		sendMessage(
 			controller, {
@@ -223,13 +157,13 @@ function startEmulator() {
 
 	}
 
-	function stopUserEditing(e) {
+	function stopUserEditing( e ) {
 		userIsEditing = false;
 	}
 
-	function stopUserEditingKey(e) {
+	function stopUserEditingKey( e ) {
 		var keyCode = e.which || e.keyCode;
-		if (keyCode !== 13) {
+		if ( keyCode !== 13 ) {
 			return true;
 		}
 		// Force blur when return key is pressed
@@ -237,81 +171,28 @@ function startEmulator() {
 		target.blur();
 	}
 
-	orientationAlpha.addEventListener('focus', onUserIsEditingStart, false);
-	orientationAlpha.addEventListener('change', onUserIsEditingEnd, false);
-	orientationAlpha.addEventListener('keypress', stopUserEditingKey, false);
-	orientationAlpha.addEventListener('blur', stopUserEditing, false);
+	orientationAlpha.addEventListener( 'focus', onUserIsEditingStart, false );
+	orientationAlpha.addEventListener( 'change', onUserIsEditingEnd, false );
+	orientationAlpha.addEventListener( 'keypress', stopUserEditingKey, false );
+	orientationAlpha.addEventListener( 'blur', stopUserEditing, false );
 
-	orientationBeta.addEventListener('focus', onUserIsEditingStart, false);
-	orientationBeta.addEventListener('change', onUserIsEditingEnd, false);
-	orientationBeta.addEventListener('keypress', stopUserEditingKey, false);
-	orientationBeta.addEventListener('blur', stopUserEditing, false);
+	orientationBeta.addEventListener( 'focus', onUserIsEditingStart, false );
+	orientationBeta.addEventListener( 'change', onUserIsEditingEnd, false );
+	orientationBeta.addEventListener( 'keypress', stopUserEditingKey, false );
+	orientationBeta.addEventListener( 'blur', stopUserEditing, false );
 
-	orientationGamma.addEventListener('focus', onUserIsEditingStart, false);
-	orientationGamma.addEventListener('change', onUserIsEditingEnd, false);
-	orientationGamma.addEventListener('keypress', stopUserEditingKey, false);
-	orientationGamma.addEventListener('blur', stopUserEditing, false);
+	orientationGamma.addEventListener( 'focus', onUserIsEditingStart, false );
+	orientationGamma.addEventListener( 'change', onUserIsEditingEnd, false );
+	orientationGamma.addEventListener( 'keypress', stopUserEditingKey, false );
+	orientationGamma.addEventListener( 'blur', stopUserEditing, false );
 
 	var screenOrientationEl = document.querySelector( '#screenOrientation' );
 
 	var actions = {
-		'connect': function( data ) {
-
-			var urlHash = selfUrl.hash;
-
-			// Tell controller to start rendering
-			sendMessage(
-				controller, {
-					'action': 'start'
-				},
-				selfUrl.origin
-			);
-
-			// If any deviceorientation URL params are provided, send them to the controller
-			if ( urlHash.length > 6 ) {
-				var coords = urlHash.substring( 1 );
-				try {
-					var coordsObj = JSON.parse( coords );
-
-					if ( ( coordsObj.length === 3 || coordsObj.length === 4 ) && ( coordsObj[ 0 ] || coordsObj[ 1 ] || coordsObj[ 2 ] ) ) {
-
-						sendMessage(
-							controller, {
-								'action': 'setCoords',
-								'data': {
-									'alpha': coordsObj[ 0 ] || 0,
-									'beta': coordsObj[ 1 ] || 0,
-									'gamma': coordsObj[ 2 ] || 0
-								}
-							},
-							selfUrl.origin
-						);
-
-						// Use 4th parameter to set the screen orientation
-						if ( coordsObj[ 3 ] ) {
-							var requestedScreenOrientation = coordsObj[ 3 ] * 1;
-							if ( requestedScreenOrientation / 90 > 0 && requestedScreenOrientation / 90 < 4 ) {
-
-								if ( deviceFrame.contentWindow.screenFrame.isLoaded ) {
-									updateScreenOrientation( 360 - requestedScreenOrientation, false );
-								} else {
-									deviceFrame.contentWindow.screenFrame.addEventListener( 'load', function() {
-										updateScreenOrientation( 360 - requestedScreenOrientation, false );
-									}, false );
-								}
-
-							}
-						}
-
-					}
-				} catch ( e ) {}
-			}
-
-		},
 		'newData': function( data ) {
 
 			// Print deviceorientation data values in GUI
-			if (!userIsEditing) {
+			if ( !userIsEditing ) {
 				orientationAlpha.value = printDataValue( data.alpha );
 				orientationBeta.value = printDataValue( data.beta );
 				orientationGamma.value = printDataValue( data.gamma );
@@ -337,24 +218,68 @@ function startEmulator() {
 			deviceFrame.style.webkitTransform = deviceFrame.style.msTransform = deviceFrame.style.transform = 'rotate(' + ( roll - currentScreenOrientation ) + 'deg) scale(' + scaleFactor + ')';
 
 		},
-		'updatePosition': function( data ) {
+		'updateScreenOrientation': function( data ) {
 
-			window.setTimeout( function() {
-				var hashData = [
-					parseFloat( orientationAlpha.value, 10 ),
-					parseFloat( orientationBeta.value, 10 ),
-					parseFloat( orientationGamma.value, 10 ), ( 360 - currentScreenOrientation ) % 360
-				].join( ',' );
+			var requestedScreenOrientation = data.totalRotation % 360;
+			var updateControls = data.updateControls;
 
-				selfUrl.hash = '#[' + hashData + ']';
+			// Calculate rotation difference
+			var currentRotation = currentScreenOrientation == 0 ? 360 : currentScreenOrientation;
 
-				replaceURL( selfUrl );
-			}, 100 );
+			var rotationDiff = currentRotation - requestedScreenOrientation;
+
+			// Update controller rendering
+			sendMessage(
+				controller, {
+					'action': 'rotateScreen',
+					'data': {
+						'rotationDiff': -rotationDiff,
+						'totalRotation': requestedScreenOrientation,
+						'updateControls': updateControls
+					}
+				},
+				selfUrl.origin
+			);
+
+			// Notify emulated page that screen orientation has changed
+			sendMessage(
+				deviceFrame, {
+					'action': 'screenOrientationChange',
+					'data': 360 - requestedScreenOrientation
+				},
+				selfUrl.origin
+			);
+
+			if ( ( ( currentRotation / 90 ) % 2 ) !== ( ( requestedScreenOrientation / 90 ) % 2 ) ) {
+
+				$( 'button[data-rotate=true]' ).each( function() {
+					width = $( this ).attr( 'data-viewport-width' );
+					height = $( this ).attr( 'data-viewport-height' );
+					$( this ).attr( 'data-viewport-width', height );
+					$( this ).attr( 'data-viewport-height', width );
+					if ( $( this ).hasClass( 'active' ) ) {
+						$( this ).trigger( 'click' );
+					}
+				} );
+
+			}
+
+			screenOrientationEl.textContent = ( 360 - requestedScreenOrientation ) % 360;
+
+			// Update current screen orientation
+			currentScreenOrientation = requestedScreenOrientation;
 
 		},
 		'lockScreenOrientation': function( data ) {
 
-			updateScreenOrientation( ( 360 - data ) % 360, true );
+			// Post message to self to update screen orientation
+			postMessage( JSON.stringify( {
+				'action': 'updateScreenOrientation',
+				'data': {
+					'totalRotation': 360 - data,
+					'updateControls': true
+				}
+			} ), selfUrl.origin );
 
 			$( 'button.rotate' ).prop( "disabled", true ).attr( "title", "Screen Rotation is locked by page" );
 			$( 'i', 'button.rotate' ).addClass( 'icon-lock' ).removeClass( 'icon-rotate-left' );
