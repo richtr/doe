@@ -246,47 +246,59 @@ var APP = {
 
 		this.tween = ( function() {
 
-			var source, destination;
-			var _this;
-
 			var waitTime, playTime;
 
-			return function( frame ) {
+			var destRot = new THREE.Euler(); // input euler values
 
-				_this = this;
+			var qa = new THREE.Quaternion(); // source quaternion
+			var qb = new THREE.Quaternion(); // destination quaternion
+			var qm = new THREE.Quaternion(); // worker
+
+			return function( frame ) {
 
 				var tweenPromise = new Promise( function( resolve, reject ) {
 
 					tweenInProgress = true;
 
-					source = {
-						alpha: deviceOrientation.alpha || 0,
-						beta: deviceOrientation.beta || 0,
-						gamma: deviceOrientation.gamma || 0
-					};
-
-					destination = {};
-
-					if ( frame.data.alpha !== source.alpha ) destination.alpha = frame.data.alpha;
-					if ( frame.data.beta !== source.beta ) destination.beta = frame.data.beta;
-					if ( frame.data.gamma !== source.gamma ) destination.gamma = frame.data.gamma;
-
 					waitTime = frame.offset * 1000;
 					playTime = frame.duration * 1000;
+
+					var _x = THREE.Math.degToRad( frame.data.beta || 0 );
+					var _y = THREE.Math.degToRad( frame.data.alpha || 0 );
+					var _z = THREE.Math.degToRad( frame.data.gamma || 0 );
+
+					destRot.set( _x, _y, -_z, 'YXZ' );
+
+					// Obtain target quaternion from provided Euler angles
+					qb.setFromEuler( destRot );
+					qb.multiply( worldQuat );
+
+					// Set source as the current camera's quaternion
+					qa.copy( controls.object.quaternion );
+
+					// Reset our worker quaternion
+					qm.set( 0, 0, 0, 1 );
 
 					var throwError = window.setTimeout( function() {
 						tweenInProgress = false;
 						reject();
 					}, waitTime + 200 );
 
-					var tween = new TWEEN.Tween( source )
+					var o = {
+						t: 0
+					};
+
+					new TWEEN.Tween( o )
 						.delay( waitTime )
-						.to( destination, playTime )
+						.to( {
+							t: 1
+						}, playTime )
 						.onStart( function() {
 							window.clearTimeout( throwError );
 						} )
 						.onUpdate( function() {
-							_this.setManualOrientation( this.alpha, this.beta, this.gamma );
+							THREE.Quaternion.slerp( qa, qb, qm, o.t );
+							controls.object.quaternion.copy( qm );
 						} )
 						.onComplete( function() {
 							tweenInProgress = false;
