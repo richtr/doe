@@ -54,13 +54,13 @@
 			<li>
 				<div class="info" style="margin-right: 0px; padding-right:0px;" title="Current Device Orientation Data (in degrees)">
 					a:
-					<input type="number" id="orientationAlpha" value="-" tabindex="1"> b:
-					<input type="number" id="orientationBeta" value="-" tabindex="2"> g:
-					<input type="number" id="orientationGamma" value="-" tabindex="3">
+					<input type="number" id="orientationAlpha" data-disable-during-playback="true" value="-" tabindex="1"> b:
+					<input type="number" id="orientationBeta" data-disable-during-playback="true" value="-" tabindex="2"> g:
+					<input type="number" id="orientationGamma" data-disable-during-playback="true" value="-" tabindex="3">
 				</div>
 			</li>
 			<li>
-				<button class="charcoal reset" title="Reset Device Orientation Data" style="margin-right: 10px" tabindex="-1"><i class="icon-location-arrow"></i></button>
+				<button class="charcoal reset" title="Reset Device Orientation Data" style="margin-right: 10px" data-disable-during-playback="true" tabindex="-1"><i class="icon-location-arrow"></i></button>
 			</li>
 			<li>
 				<div class="info" style="margin: 0; padding-right: 10px" title="Current Screen Orientation Angle (in degrees)">
@@ -69,7 +69,7 @@
 				</div>
 			</li>
 			<li>
-				<button class="charcoal rotate" data-rotate="true" title="Rotate the Screen" tabindex="-1"><i class="icon-rotate-left"></i></button>
+				<button class="charcoal rotate" data-rotate="true" title="Rotate the Screen" data-disable-during-playback="true" tabindex="-1"><i class="icon-rotate-left"></i></button>
 			</li>
 		</ul>
 	</div>
@@ -81,7 +81,7 @@
 	<div id="timeline" class="bounceInUp animated" style="z-index:3;">
 		<ul class="button-group">
 			<li>
-				<button id="play" class="charcoal" title="Play timeline" tabindex="4"><i class="icon-play"></i></button>
+				<button id="play" class="charcoal" title="Play timeline" data-disable-during-playback="true" tabindex="4"><i class="icon-play"></i></button>
 			</li>
 			<li>
 				<div class="info" style="margin-right:0px">
@@ -97,12 +97,12 @@
 		</ul>
 		<ul class="button-group">
 			<li>
-				<button id="addNewFrame" class="frame blue" title="Add a new animation frame" tabindex="-1"><i class="icon-plus"></i></button>
+				<button id="addNewFrame" class="frame blue" title="Add a new animation frame" data-disable-during-playback="true" tabindex="-1"><i class="icon-plus"></i></button>
 			</li>
 		</ul>
 		<ul class="button-group">
 			<li>
-				<button id="clearTimeline" class="frame red" title="Remove all animation frames" tabindex="-1"><i class="icon-trash"></i></button>
+				<button id="clearTimeline" class="frame red" title="Remove all animation frames" data-disable-during-playback="true" tabindex="-1"><i class="icon-trash"></i></button>
 			</li>
 		</ul>
 	</div>

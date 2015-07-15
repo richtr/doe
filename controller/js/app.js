@@ -168,6 +168,12 @@ var APP = {
 
 				var frameNumber = 0;
 
+				sendMessage(
+					window.parent, {
+						'action': 'playbackStarted'
+					}
+				);
+
 				// Tween through each of our animation frames
 				data.frames.reduce( function( chain, frame ) {
 					// Add these actions to the end of the promise chain
@@ -193,7 +199,7 @@ var APP = {
 					window.setTimeout( function() {
 						sendMessage(
 							window.parent, {
-								'action': 'resetTimeline'
+								'action': 'playbackEnded'
 							}
 						);
 
@@ -387,9 +393,9 @@ var APP = {
 
 			if ( tweenInProgress ) {
 				TWEEN.update( time );
+			} else {
+				controls.update();
 			}
-
-			controls.update();
 
 			// *** Calculate device orientation quaternion (without affecting rendering)
 			camQuat.copy( controls.object.quaternion );

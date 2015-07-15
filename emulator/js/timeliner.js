@@ -147,9 +147,6 @@ var actions = {
 		$( 'button#play' ).on( 'click', function() {
 			$( 'button[data-frame-number=0]' ).removeClass( 'charcoal' ).addClass( 'asphalt active' );
 
-			// Disable play button for duration of animation
-			$( 'button#play' ).attr( 'disabled', 'disabled' );
-
 			$( 'button[data-frame-number=0]' ).trigger( 'click' );
 
 			timeline.start();
@@ -347,12 +344,22 @@ var actions = {
 		$( 'button[data-frame-number=' + ( data || 0 ) + ']' ).trigger( 'click' );
 
 	},
-	'resetTimeline': function( data ) {
+	'playbackStarted': function( data ) {
+
+		// Disable buttons
+		$( '[data-disable-during-playback]').each(function() {
+			$( this ).attr('disabled', 'disabled');
+		});
+
+	},
+	'playbackEnded': function( data ) {
 
 		$( 'button[data-frame-number=0]' ).trigger( 'click' );
 
-		// Re-enable play button
-		$( 'button#play' ).removeAttr( 'disabled' );
+		// Re-enable buttons
+		$( '[data-disable-during-playback]').each(function() {
+			$( this ).removeAttr( 'disabled' );
+		});
 
 	}
 };
