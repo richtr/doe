@@ -19,23 +19,31 @@
 
 	var emulatorUrl = new URL( 'https://richtr.github.io/doe/emulator' );
 
+	function loadSWAL( callback ) {
+		var swalCSSEl = document.createElement( 'link' );
+		swalCSSEl.href = 'https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.0.1/sweetalert.min.css';
+		swalCSSEl.type = 'text/css';
+		swalCSSEl.rel = 'stylesheet';
+		document.getElementsByTagName( 'head' )[ 0 ].appendChild( swalCSSEl );
+
+		var swalJSEl = document.createElement( 'script' );
+		swalJSEl.src = 'https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.0.1/sweetalert.min.js';
+		swalJSEl.type = 'text/javascript';
+
+		swalJSEl.onload = function() {
+			callback();
+		};
+
+		document.getElementsByTagName( 'head' )[ 0 ].appendChild( swalJSEl );
+	}
+
 	function runDetection() {
 
 		var checkTimeout = 1000;
 
 		var deviceOrientationCheck = window.setTimeout( function() {
 
-			var swalCSSEl = document.createElement( 'link' );
-			swalCSSEl.href = 'https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.0.1/sweetalert.min.css';
-			swalCSSEl.type = 'text/css';
-			swalCSSEl.rel = 'stylesheet';
-			document.getElementsByTagName( 'head' )[ 0 ].appendChild( swalCSSEl );
-
-			var swalJSEl = document.createElement( 'script' );
-			swalJSEl.src = 'https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.0.1/sweetalert.min.js';
-			swalJSEl.type = 'text/javascript';
-
-			swalJSEl.onload = function() {
+			loadSWAL( function() {
 				swal( {
 						title: 'No compass detected.',
 						text: 'This page is built for browsers that emit hardware sensor events. If you would still like to try this page you can use an emulator.',
@@ -51,9 +59,7 @@
 						var pageUrl = encodeURIComponent( window.location );
 						window.location = emulatorUrl.toString() + '/?url=' + pageUrl;
 					} );
-			};
-
-			document.getElementsByTagName( 'head' )[ 0 ].appendChild( swalJSEl );
+			} );
 
 		}, checkTimeout );
 
@@ -265,7 +271,20 @@
 
 	// Inject Screen Orientation API shim ASAP when running in emulator
 	var parentUrl = new URL( document.referrer || 'http:a' );
-	if ( document.referrer == "" || window.parent == window || parentUrl.origin !== emulatorUrl.origin ) {
+
+	if ( parentUrl.origin === emulatorUrl.origin && parentUrl.pathname.indexOf( emulatorUrl.pathname, 0 ) === 0 ) {
+
+		// We were kicked from the referrer!
+		loadSWAL( function() {
+			swal({
+				title: "Compass detected.",
+				text: "You have been redirected here from the emulator because your device supports the required hardware sensor events.",
+				type: "success",
+				confirmButtonColor: "#638450"
+			});
+		} );
+
+	} else if ( document.referrer == "" || window.parent == window || parentUrl.origin !== emulatorUrl.origin ) {
 
 		// Check if device orientation events are supported.
 		// If not, show the emulator alert message.
