@@ -346,15 +346,6 @@ var actions = {
 
 		$( 'button[data-frame-number=' + ( data || 0 ) + ']' ).trigger( 'click' );
 
-		// Rotate screen orientation to correct value
-		postMessage( JSON.stringify( {
-			'action': 'updateScreenOrientation',
-			'data': {
-				'totalRotation': ( 360 - timeline.get( data ).data.screen ) % 360,
-				'updateControls': false
-			}
-		} ), selfUrl.origin );
-
 	},
 	'resetTimeline': function( data ) {
 
