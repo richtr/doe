@@ -272,7 +272,7 @@
 	// Inject Screen Orientation API shim ASAP when running in emulator
 	var parentUrl = new URL( document.referrer || 'http:a' );
 
-	if ( parentUrl.origin === emulatorUrl.origin && parentUrl.pathname.indexOf( emulatorUrl.pathname, 0 ) === 0 ) {
+	if ( parentUrl.origin === emulatorUrl.origin && parentUrl.pathname.indexOf( emulatorUrl.pathname, 0 ) === 0 && parentUrl.pathname.indexOf( "/screen", 0 ) < 0 ) {
 
 		// We were kicked from the referrer!
 		loadSWAL( function() {
