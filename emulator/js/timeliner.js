@@ -208,7 +208,7 @@ var actions = {
 					screen: _lastData.screen
 				};
 
-				timeline.animate( data, 2, 0 );
+				timeline.animate( data, 1, 0 );
 
 			}
 
@@ -320,9 +320,9 @@ var actions = {
 		// If this data applies to the first frame or a screen orientation change
 		// is being observed then use .set instead of .animate!
 		if ( activeFrameIndex === 0 || _data.screen !== _lastData.screen ) {
-			timeline.set( _data, _data.screen !== _lastData.screen ? 2 : 1, 0, activeFrameIndex );
+			timeline.set( _data, _data.screen !== _lastData.screen ? 1 : 0.5, 0, activeFrameIndex );
 		} else {
-			timeline.animate( _data, 2, 0, activeFrameIndex );
+			timeline.animate( _data, 1, 0, activeFrameIndex );
 		}
 
 		_lastData = _data; // store for next loop
