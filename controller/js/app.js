@@ -181,15 +181,12 @@ var APP = {
 				data.frames.reduce( function( chain, frame ) {
 					// Add these actions to the end of the promise chain
 					return chain.then( function() {
-						if ( frameNumber > 0 ) {
-							sendMessage(
-								window.parent, {
-									'action': 'updateActiveFrame',
-									'data': frameNumber
-								}
-							);
-						}
-						frameNumber++;
+						sendMessage(
+							window.parent, {
+								'action': 'playbackTransition',
+								'data': frameNumber++
+							}
+						);
 
 						if ( frame.type === 0 ) { // SET
 							return _this.set( frame );

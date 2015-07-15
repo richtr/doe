@@ -217,6 +217,7 @@ var actions = {
 				$( '<li></li>' ).append(
 					$( '<button class="frame charcoal" tabindex="-1"></button>' )
 					.attr( 'data-frame-number', newFrameId )
+					.attr( 'data-disable-during-playback', 'true' )
 					.text( newFrameId + 1 )
 				)
 			);
@@ -339,27 +340,40 @@ var actions = {
 			replaceURL( selfUrl );
 		}, 150 );
 	},
-	'updateActiveFrame': function( data ) {
-
-		$( 'button[data-frame-number=' + ( data || 0 ) + ']' ).trigger( 'click' );
-
-	},
 	'playbackStarted': function( data ) {
 
 		// Disable buttons
-		$( '[data-disable-during-playback]').each(function() {
-			$( this ).attr('disabled', 'disabled');
-		});
+		$( '[data-disable-during-playback]' ).each( function() {
+			$( this ).attr( 'disabled', 'disabled' );
+		} );
+
+	},
+	'playbackTransition': function( data ) {
+
+		// Disable the previous frame if we have one
+		if ( data > 0 ) {
+			var previousFrameButton = $( 'button[data-frame-number=' + ( data - 1 ) + ']' );
+
+			previousFrameButton.removeClass( 'asphalt active' )
+			previousFrameButton.addClass( 'charcoal' );
+			previousFrameButton.attr( 'disabled', 'disabled' );
+		}
+
+		var thisFrameButton = $( 'button[data-frame-number=' + data + ']' )
+
+		thisFrameButton.removeAttr( 'disabled' );
+		thisFrameButton.removeClass( 'charcoal' );
+		thisFrameButton.addClass( 'asphalt active' );
 
 	},
 	'playbackEnded': function( data ) {
 
-		$( 'button[data-frame-number=0]' ).trigger( 'click' );
-
 		// Re-enable buttons
-		$( '[data-disable-during-playback]').each(function() {
+		$( '[data-disable-during-playback]' ).each( function() {
 			$( this ).removeAttr( 'disabled' );
-		});
+		} );
+
+		$( 'button[data-frame-number=0]' ).trigger( 'click' );
 
 	}
 };
