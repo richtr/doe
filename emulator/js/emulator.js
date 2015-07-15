@@ -4,6 +4,7 @@ function startEmulator() {
 
 	var controller = document.querySelector( 'iframe#controller' );
 	var emulatorMenu = document.querySelector( '#emulator' );
+	var credits = document.querySelector( '#credits' );
 
 	var deviceFrame = document.querySelector( 'iframe#deviceFrame' );
 
@@ -12,6 +13,7 @@ function startEmulator() {
 
 		controller.style.display = 'block';
 		emulatorMenu.style.display = 'block';
+		credits.style.display = 'block';
 	}, false );
 
 	// Load controller

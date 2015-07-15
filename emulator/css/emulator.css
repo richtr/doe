@@ -106,6 +106,18 @@ button.rotate {
 		-o-transform: rotate(-90deg);
 		transform: rotate(-90deg);
 }
+#credits {
+		line-height: 1;
+		position: fixed;
+		display: none;
+		bottom: 0;
+		right: 0;
+		padding: 10px 20px;
+}
+#credits a:hover, #credits a:active, #credits a:visited {
+	text-decoration: none;
+}
+
 [data-max="150"] {
 		font-size: 150px;
 }
