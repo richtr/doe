@@ -359,11 +359,7 @@ var actions = {
 			previousFrameButton.attr( 'disabled', 'disabled' );
 		}
 
-		var thisFrameButton = $( 'button[data-frame-number=' + data + ']' )
-
-		thisFrameButton.removeAttr( 'disabled' );
-		thisFrameButton.removeClass( 'charcoal' );
-		thisFrameButton.addClass( 'asphalt active' );
+		$( 'button[data-frame-number=' + data + ']' ).removeAttr( 'disabled' ).trigger( 'click' );
 
 	},
 	'playbackEnded': function( data ) {
