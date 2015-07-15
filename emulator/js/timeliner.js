@@ -292,6 +292,9 @@ var actions = {
 							'updateControls': false
 						}
 					} ), selfUrl.origin );
+
+					// Start whatever animation was loaded when page loads
+					timeline.start();
 				}
 			} catch ( e ) {
 				console.log( e );
