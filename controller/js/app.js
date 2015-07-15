@@ -161,6 +161,9 @@ var APP = {
 
 				_this = this;
 
+				// Disconnect controls
+				controls.disconnect();
+
 				// Store original device orientation values
 				_a0 = deviceOrientation.alpha;
 				_b0 = deviceOrientation.beta;
@@ -204,6 +207,9 @@ var APP = {
 						);
 
 						_this.setManualOrientation( _a0, _b0, _g0 );
+
+						// Re-connect controls
+						controls.connect();
 					}, 1000 );
 				} );
 
@@ -405,9 +411,9 @@ var APP = {
 
 			if ( tweenInProgress ) {
 				TWEEN.update( time );
-			} else {
-				controls.update();
 			}
+
+			controls.update();
 
 			// *** Calculate device orientation quaternion (without affecting rendering)
 			camQuat.copy( controls.object.quaternion );
