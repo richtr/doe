@@ -1,30 +1,17 @@
 {
-	"project": {
-		"vr": false
-	},
 	"camera": {
-		"metadata": {
-			"version": 4.3,
-			"type": "Object",
-			"generator": "ObjectExporter"
-		},
 		"object": {
-			"uuid": "661272A4-3D6E-49ED-ABE2-76563D69BD16",
+			"uuid": "327EF66D-EEBD-4A83-A931-03CFC0DB29D6",
 			"type": "PerspectiveCamera",
 			"name": "Camera",
-			"fov": 50,
-			"aspect": 1.5356576862123614,
-			"near": 0.1,
-			"far": 100000,
-			"matrix": [0.4262996017932892,1.0573869779761935e-8,-0.9045820236206055,0,-0.12608157098293304,0.9902388453483582,-0.05941805988550186,0,0.8957522511482239,0.1393810212612152,0.42213842272758484,0,3911.940185546875,953.576416015625,835.5611572265625,1]
+			"fov": 45,
+			"aspect": 1,
+			"near": 500,
+			"far": 2000,
+			"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,1400,1]
 		}
 	},
 	"scene": {
-		"metadata": {
-			"version": 4.3,
-			"type": "Object",
-			"generator": "ObjectExporter"
-		},
 		"geometries": [
 			{
 				"uuid": "30A85AD1-7D0E-4B3B-9B6F-E427723665B7",
@@ -63,18 +50,18 @@
 				"height": 712,
 				"widthSegments": 1,
 				"heightSegments": 1
-			}],
+			}
+		],
 		"materials": [
 			{
 				"uuid": "E0C60A4E-742B-4AD4-A035-048FE939101C",
 				"type": "MeshPhongMaterial",
 				"name": "iphone_material",
-				"color": 0,
-				"emissive": 0,
+				"color": 1118481,
+				"emissive": 1118481,
 				"specular": 1118481,
 				"shininess": 50,
-				"blending": 0,
-				"opacity": 0
+				"opacity": 1
 			},
 			{
 				"uuid": "6AD01FD1-2363-4CCD-8732-AFF618DCEAAB",
@@ -90,79 +77,68 @@
 				"uuid": "4AD01FD1-2363-4CCD-8732-AFF618DCEAAB",
 				"type": "MeshBasicMaterial",
 				"color": 2204745
-			}],
+			}
+		],
 		"object": {
 			"uuid": "4B2EE0BA-CD3E-4125-A0EB-C3CE8FE9CE90",
 			"type": "Scene",
-			"name": "Scene",
+			"name": "doe",
 			"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],
 			"children": [
 				{
-					"uuid": "8EC438B7-C3E3-4428-8F98-AA8A48F4FF2A",
-					"type": "Group",
-					"name": "Lights",
-					"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],
-					"children": [
-						{
-							"uuid": "B45689C0-E9FD-4629-B6E8-9C3FBA4799B7",
-							"type": "DirectionalLight",
-							"name": "DirectionalLight1",
-							"color": 16777215,
-							"intensity": 0.4,
-							"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,-88.83000183105469,123.73999786376953,400,1]
-						},
-						{
-							"uuid": "9A2B63DD-5BE1-46E0-98E7-DC18814C868D",
-							"type": "DirectionalLight",
-							"name": "DirectionalLight2",
-							"color": 16777215,
-							"intensity": 0.6,
-							"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,700,1]
-						},
-						{
-							"uuid": "0025C776-09B1-41FC-A56E-9D1DBB93A967",
-							"type": "DirectionalLight",
-							"name": "DirectionalLight3",
-							"color": 16777215,
-							"intensity": 1,
-							"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,100,514.7000122070312,-1694.0699462890625,1]
-						},
-						{
-							"uuid": "37EF4908-EDA8-4AAA-9EAC-0CDCAF987E90",
-							"type": "DirectionalLight",
-							"name": "DirectionalLight4",
-							"color": 16777215,
-							"intensity": 1,
-							"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,700,270,700,1]
-						},
-						{
-							"uuid": "EE753AEF-41AF-4857-8916-FFC62378FD49",
-							"type": "AmbientLight",
-							"name": "AmbientLight1",
-							"color": 16382457,
-							"matrix": [5.349999904632568,0,0,0,0,1,0,0,0,0,1,0,-230.00999450683594,964.5499877929688,-459.80999755859375,1]
-						}]
-				},
-				{
 					"uuid": "D5083881-7A5B-40AF-8A5F-19F401AF1C70",
 					"type": "Group",
-					"name": "Objects",
+					"name": "phone",
 					"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],
 					"children": [
 						{
-							"uuid": "327EF66D-EEBD-4A83-A931-03CFC0DB29D6",
-							"type": "PerspectiveCamera",
-							"name": "PerspectiveCamera",
-							"fov": 50,
-							"aspect": 1,
-							"near": 10,
-							"far": 5000,
-							"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,1400,1]
+							"uuid": "18A9E6EC-DDA1-41DF-8D31-0AAF9CF3A686",
+							"type": "Group",
+							"name": "Lights",
+							"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],
+							"children": [
+								{
+									"uuid": "BD4AC3AF-EABD-4313-82FE-A1D27D5ECD13",
+									"type": "HemisphereLight",
+									"name": "light_front",
+									"color": 0,
+									"groundColor": 16777215,
+									"intensity": 1,
+									"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,-900,950,900]
+								},
+								{
+									"uuid": "AA4AC3AF-EABD-4313-82FE-A1D27D5ECD13",
+									"type": "HemisphereLight",
+									"name": "light_front",
+									"color": 0,
+									"groundColor": 16777215,
+									"intensity": 1,
+									"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,-900,-950,900]
+								},
+								{
+									"uuid": "EB4AC3AF-EABD-4313-82FE-A1D27D5ECD13",
+									"type": "HemisphereLight",
+									"name": "light_front",
+									"color": 0,
+									"groundColor": 16777215,
+									"intensity": 1,
+									"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,900,-950,900]
+								},
+								{
+									"uuid": "CF4AC3AF-EABD-4313-82FE-A1D27D5ECD13",
+									"type": "HemisphereLight",
+									"name": "light_front",
+									"color": 0,
+									"groundColor": 16777215,
+									"intensity": 1,
+									"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,900,950,900]
+								}
+							]
 						},
 						{
 							"uuid": "33A20938-78BD-4994-8180-E10EC6876880",
 							"type": "Mesh",
-							"name": "iphone_mesh",
+							"name": "phone_mesh",
 							"geometry": "30A85AD1-7D0E-4B3B-9B6F-E427723665B7",
 							"material": "E0C60A4E-742B-4AD4-A035-048FE939101C",
 							"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],
@@ -181,7 +157,17 @@
 											"name": "screen_top",
 											"geometry": "208B47A6-CB2C-4671-A5A0-3D72952CFE19",
 											"material": "5AD01FD1-2363-4CCD-8732-AFF618DCEAAB",
-											"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,-338,1,1]
+											"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,-338,1,1],
+											"visible": true
+										},
+										{
+											"uuid": "7BF12A54-9A47-451F-8820-21A8CD28668E",
+											"type": "Mesh",
+											"name": "screen_bottom",
+											"geometry": "208B47A6-CB2C-4671-A5A0-3D72952CFE19",
+											"material": "4AD01FD1-2363-4CCD-8732-AFF618DCEAAB",
+											"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,338,1,1],
+											"visible": true
 										},
 										{
 											"uuid": "81F12A54-9A47-451F-8820-21A8CD28668E",
@@ -191,14 +177,6 @@
 											"material": "4AD01FD1-2363-4CCD-8732-AFF618DCEAAB",
 											"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,-338,1,1],
 											"visible": false
-										},
-										{
-											"uuid": "7BF12A54-9A47-451F-8820-21A8CD28668E",
-											"type": "Mesh",
-											"name": "screen_bottom",
-											"geometry": "208B47A6-CB2C-4671-A5A0-3D72952CFE19",
-											"material": "4AD01FD1-2363-4CCD-8732-AFF618DCEAAB",
-											"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,338,1,1]
 										},
 										{
 											"uuid": "72F12A54-9A47-451F-8820-21A8CD28668E",
@@ -219,21 +197,21 @@
 											"visible": false
 										},
 										{
-											"uuid": "93F12A54-9A47-451F-8820-21A8CD28668E",
-											"type": "Mesh",
-											"name": "screen_left_inverse",
-											"geometry": "108B47A6-CB2C-4671-A5A0-3D72952CFE19",
-											"material": "4AD01FD1-2363-4CCD-8732-AFF618DCEAAB",
-											"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,202,0,1,1],
-											"visible": false
-										},
-										{
 											"uuid": "ABF12A54-9A47-451F-8820-21A8CD28668E",
 											"type": "Mesh",
 											"name": "screen_right",
 											"geometry": "108B47A6-CB2C-4671-A5A0-3D72952CFE19",
 											"material": "4AD01FD1-2363-4CCD-8732-AFF618DCEAAB",
 											"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,-202,0,1,1],
+											"visible": false
+										},
+										{
+											"uuid": "93F12A54-9A47-451F-8820-21A8CD28668E",
+											"type": "Mesh",
+											"name": "screen_left_inverse",
+											"geometry": "108B47A6-CB2C-4671-A5A0-3D72952CFE19",
+											"material": "4AD01FD1-2363-4CCD-8732-AFF618DCEAAB",
+											"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,202,0,1,1],
 											"visible": false
 										},
 										{
@@ -250,12 +228,5 @@
 				}]
 		}
 	},
-	"scripts": {
-		"327EF66D-EEBD-4A83-A931-03CFC0DB29D6": [
-			{
-				"name": "Camera",
-				"source": "player.setCamera( this );"
-			}
-		]
-	}
+	"scripts": {}
 }

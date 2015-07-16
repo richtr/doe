@@ -77,11 +77,11 @@ var APP = {
 
 			}
 
-			// Rotate the phone in the scene, not the camera as usual
-			var phoneMesh = scene.getObjectByProperty( 'uuid', '33A20938-78BD-4994-8180-E10EC6876880', true );
+			// Rotate the phone group in the scene, not the camera as usual
+			var phoneGroupObj = scene.getObjectByProperty( 'uuid', 'D5083881-7A5B-40AF-8A5F-19F401AF1C70', true );
 
 			// Set up device orientation emulator controls
-			controls = new DeviceOrientationEmulatorControls( phoneMesh, scope.dom );
+			controls = new DeviceOrientationEmulatorControls( phoneGroupObj, scope.dom );
 			controls.enableManualZoom = false;
 			controls.connect();
 
