@@ -294,7 +294,10 @@ var actions = {
 					} ), selfUrl.origin );
 
 					// Start whatever animation was loaded when page loads
-					timeline.start();
+					window.setTimeout(function() {
+							timeline.start();
+					}, 500); // delay until setCoords and updateScreenOrientation above complete
+
 				}
 			} catch ( e ) {
 				console.log( e );
