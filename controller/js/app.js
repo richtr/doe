@@ -208,6 +208,18 @@ var APP = {
 						// Re-connect controls
 						controls.connect();
 					}, 1000 );
+				} ).catch( function() {
+					// Clean-up on error
+					sendMessage(
+						window.parent, {
+							'action': 'playbackEnded'
+						}
+					);
+
+					_this.setManualOrientation( _a0, _b0, _g0 );
+
+					// Re-connect controls
+					controls.connect();
 				} );
 
 			};
@@ -285,7 +297,7 @@ var APP = {
 					var throwError = window.setTimeout( function() {
 						tweenInProgress = false;
 						reject();
-					}, waitTime + 2000 );
+					}, waitTime + 5000 );
 
 					var o = {
 						t: 0
