@@ -285,7 +285,7 @@ var APP = {
 					var throwError = window.setTimeout( function() {
 						tweenInProgress = false;
 						reject();
-					}, waitTime + 200 );
+					}, waitTime + 500 );
 
 					var o = {
 						t: 0
