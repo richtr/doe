@@ -217,8 +217,8 @@ var DeviceOrientationEmulatorControls = function( object, domElement ) {
 
 			if ( appState === CONTROLLER_STATE.MANUAL_ROTATE ) {
 
-				lat = ( startY - currentY ) * scrollSpeedY;
-				lon = ( startX - currentX ) * scrollSpeedX;
+				lat = - ( startY - currentY ) * scrollSpeedY;
+				lon = - ( startX - currentX ) * scrollSpeedX;
 
 				phi = THREE.Math.degToRad( lat );
 				theta = THREE.Math.degToRad( lon );
