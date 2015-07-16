@@ -113,11 +113,12 @@ button.rotate {
 		bottom: 0;
 		right: 0;
 		padding: 10px 20px;
+		color: #CCCCCC;
+		font-size: 11px;
 }
 #credits a:hover, #credits a:active, #credits a:visited {
-	text-decoration: none;
+		text-decoration: none;
 }
-
 [data-max="150"] {
 		font-size: 150px;
 }
