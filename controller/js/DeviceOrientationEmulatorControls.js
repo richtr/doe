@@ -295,6 +295,8 @@ var DeviceOrientationEmulatorControls = function( object, domElement ) {
 
 		this.element.addEventListener( 'mousedown', this.onDocumentMouseDown, false );
 		this.element.addEventListener( 'touchstart', this.onDocumentTouchStart, false );
+
+		this.element.style.cursor = 'move';
 	};
 
 	this.disconnect = function() {
@@ -302,6 +304,8 @@ var DeviceOrientationEmulatorControls = function( object, domElement ) {
 
 		this.element.removeEventListener( 'mousedown', this.onDocumentMouseDown, false );
 		this.element.removeEventListener( 'touchstart', this.onDocumentTouchStart, false );
+
+		this.element.style.cursor = 'not-allowed';
 	};
 
 };
