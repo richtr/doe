@@ -312,7 +312,7 @@
 				confirmButtonColor: "#638450"
 			} );
 		} );
-	} else if ( window == window.parent || document.referrer == "" ) {
+	} else if ( window == window.parent ) {
 		// Check if the current UA supports device orientation events.
 		// If not, then display a prompt to try this page in the emulator.
 		if ( document.readyState === 'complete' ) {
