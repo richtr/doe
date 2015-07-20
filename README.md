@@ -2,9 +2,7 @@
 
 ##### Doe is a highly precise device and screen orientation emulator for developing and debugging sensor-related web apps on desktop computers
 
-It can be used to build and debug device orientation and screen orientation aware applications without needing to test on mobile devices.
-
-<img src="https://raw.githubusercontent.com/richtr/doe/images/screenshot.png" style="max-width: 100%">
+It can be used to build and debug device orientation and screen orientation aware applications without needing to constantly test on mobile devices.
 
 #### Demos
 
