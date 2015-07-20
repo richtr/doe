@@ -268,7 +268,13 @@
 
 		return function( callback ) {
 
-			if ( isSWALLoaded ) return;
+			if ( isSWALLoaded ) {
+				// Fire callback after current script runs to completion
+				window.setTimeout(function() {
+					callback();
+				}, 1);
+				return;
+			}
 
 			var swalCSSEl = document.createElement( 'link' );
 			swalCSSEl.href = 'https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.0.1/sweetalert.min.css';
