@@ -22,7 +22,7 @@ The doe emulator can also record key frames and play back those key frames as an
 
 You can check out an example key framed animation [here](https://richtr.github.io/doe/emulator/?url=https%3A%2F%2Frichtr.github.io%2FFull-Tilt%2Fexamples%2Fvr_test.html#W1sxLDEsMCwwLDkwLDAsMF0sWzEsMSwwLDkwLDkwLDAsMF0sWzEsMSwwLDE4MCw5MCwwLDBdLFsxLDEsMCwyNzAsOTAsMCwwXSxbMSwxLDAsMCw5MCwwLDBdLFsxLDEsMCw0NSw0NSwwLDBdLFsxLDEsMCwzMTUsNDUsMCwwXSxbMSwxLDAsMCw5MCwwLDBdLFsxLDEsMCwwLC0xODAsMCwwXSxbMSwxLDAsMCwtOTAsMCwwXSxbMSwxLDAsMjcwLDAsLTkwLDI3MF0sWzEsMSwwLDE4MCwwLC05MCwyNzBdLFsxLDEsMCwwLDAsLTkwLDI3MF0sWzEsMSwwLDI3MCwwLC05MCwyNzBdLFswLDEsMCwxODAsOTAsMCwxODBdLFsxLDEsMCwwLDkwLDAsMTgwXSxbMCwxLDAsMCw5MCwwLDBdXQ==).
 
-#### Usage
+#### Developer Usage
 
 Just add the [Device Orientation Emulator script](https://github.com/richtr/doe/blob/gh-pages/doe.js) to any web page on which you want to enable the doe emulator:
 
