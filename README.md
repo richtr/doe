@@ -111,7 +111,7 @@ If the web app within the Web App Viewport uses the Screen Orientation API to lo
 
 The animation timeline lets you record and share pre-defined movements of the emulated device using key frames to mark the waypoints of that movement.
 
-<img src="https://raw.githubusercontent.com/richtr/doe/images/timeline-annotated.png" style="width: 300px; max-width: 100%">
+<img src="https://raw.githubusercontent.com/richtr/doe/images/timeline-annotated.png" style="max-width: 300px;">
 
 ###### 4.1. Play the current animation timeline
 
